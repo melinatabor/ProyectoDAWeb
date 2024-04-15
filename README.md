@@ -1,5 +1,7 @@
-# Proyecto Desarrollo y Arquitecturas Web
+# Proyecto Desarrollo y Arquitecturas Web:
+## Memo Notes
 #### Integrantes: `Juan Rios y Melina Tabor`
+#### Comando para iniciar app: `npm start`
 
 ## Sistema para Cuadernos Inteligentes
 __Memo Notes__ es un negocio relacionado con la producción de cuadernos inteligentes.
