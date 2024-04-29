@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rotar una imagen</title>
+    <script type="text/javascript">
+      var avance = 0;
+      var img1;
+
+      function retornarLienzo(x) {
+        var canvas = document.getElementById(x);
+        if (canvas.getContext) {
+          var lienzo = canvas.getContext("2d");
+          return lienzo;
+        } else return false;
+      }
+
+      function dibujar() {
+        var lienzo = retornarLienzo("lienzo1");
+        if (lienzo) {
+          lienzo.clearRect(0, 0, 600, 600);
+          lienzo.save();
+          lienzo.translate(300, 300);
+          lienzo.rotate(avance);
+          lienzo.drawImage(img1, -125, -125);
+          avance += 0.05;
+          if (avance > Math.PI * 2) avance = 0;
+          lienzo.restore();
+        }
+      }
+
+      function inicio() {
+        img1 = new Image();
+        img1.src =
+          "https://www.elfinanciero.com.mx/resizer/cIUsLBR6QBgXWtB16Kd5pxqzGjE=/400x267/filters:format(jpg):quality(70)/cloudfront-us-east-1.images.arcpublishing.com/elfinanciero/GN6MEECVSJABFFUCMLD2L5MY3M.jpg";
+        img1.onload = function () {
+          setInterval(dibujar, 50);
+        };
+      }
+    </script>
+  </head>
+  <body onLoad="inicio()">
+    <canvas id="lienzo1" width="600" height="600">
+      Su navegador no permite utilizar canvas.
+    </canvas>
+  </body>
+</html>
