@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style>
+      .miclase1 {
+        font: 18pt script;
+        color: gray;
+      }
+      .miclase2 {
+        font: 24pt verdana;
+        color: yellow;
+      }
+    </style>
+
+    <title>Ejercicio 4 - Clase 5</title>
+  </head>
+  <body>
+    <form id="form1" runat="server">
+      <div>
+        <asp:Label
+          id="miLabel"
+          Text="Demostracion hoja de estilo con clase"
+          runat="server"
+        />
+        <hr />
+        <hr />
+        <hr />
+        <hr />
+        <asp:LinkButton
+          id="Script"
+          Text="Fuente del script!"
+          OnClick="script_CLICK"
+          runat="server"
+        />
+        <p>
+          <asp:LinkButton
+            id="Verdana"
+            Text="Fuente verdana"
+            OnClick="Verdana_CLICK"
+            runat="server"
+          />
+
+          <script runat="server">
+            Sub script_CLICK(ByVal s As Object, ByVal e As EventArgs)
+                miLabel.CssClass = "miclase2"
+            End Sub
+
+            Sub verdana_CLICK(ByVal s As Object, ByVal e As EventArgs)
+                miLabel.CssClass = "miclase2"
+            End Sub
+          </script>
+        </p>
+      </div>
+    </form>
+  </body>
+</html>
