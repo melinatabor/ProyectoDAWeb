@@ -3,11 +3,42 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using DAL;
+using System.Collections;
 
 namespace MPP
 {
     public class MPPUsuario
     {
+        public static BEUsuario BuscarUsuario(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Password", usuario.Password);
+                parametros.Add("@Username", usuario.Username);
+
+                string query = $"SELECT * FROM Usuario WHERE Username = @Username AND Password = @Password";
+
+                DataTable table = Acceso.ExecuteDataTable(query, parametros);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEUsuario u = new BEUsuario();
+                        return Llenar(fila, u);
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public static List<BEUsuario> Listar()
         {
             try
