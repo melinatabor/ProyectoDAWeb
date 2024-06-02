@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLLBitacora.cs" />
     <Compile Include="BLLUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -52,6 +53,10 @@
     <ProjectReference Include="..\MPP\MPP.csproj">
       <Project>{7fdd4e85-2f20-46c1-97bd-3814fd3539b4}</Project>
       <Name>MPP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Servicios\Servicios.csproj">
+      <Project>{053f468c-34f7-46d4-a5f7-e0bf550553df}</Project>
+      <Name>Servicios</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

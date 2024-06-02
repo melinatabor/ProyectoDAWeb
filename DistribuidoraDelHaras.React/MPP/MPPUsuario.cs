@@ -3,11 +3,87 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using DAL;
+using System.Collections;
 
 namespace MPP
 {
     public class MPPUsuario
     {
+        public static bool Agregar(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Nombre", usuario.Nombre);
+                parametros.Add("@Apellido", usuario.Apellido);
+                parametros.Add("@Email", usuario.Email);
+                parametros.Add("@Username", usuario.Username);
+                parametros.Add("@Password", usuario.Password);
+                parametros.Add("@Activo", usuario.Activo);
+
+                string query = $"INSERT INTO Usuario (Nombre, Apellido, Email, Username, Password, Activo) VALUES (@Nombre, @Apellido, @Email, @Username, @Password, @Activo)";
+
+                return Acceso.ExecuteNonQuery(query, parametros);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static BEUsuario BuscarUsuario(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Password", usuario.Password);
+                parametros.Add("@Username", usuario.Username);
+
+                string query = $"SELECT * FROM Usuario WHERE Username = @Username AND Password = @Password";
+
+                DataTable table = Acceso.ExecuteDataTable(query, parametros);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEUsuario u = new BEUsuario();
+                        return Llenar(fila, u);
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static bool Editar(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Nombre", usuario.Nombre);
+                parametros.Add("@Apellido", usuario.Apellido);
+                parametros.Add("@Email", usuario.Email);
+                parametros.Add("@Username", usuario.Username);
+                parametros.Add("@Id", usuario.Id);
+
+                string query = $"UPDATE Usuario SET Nombre = @Nombre, Apellido = @Apellido, Email = @Email, Username = @Username WHERE Id = @Id";
+
+                return Acceso.ExecuteNonQuery(query, parametros);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public static List<BEUsuario> Listar()
         {
             try
