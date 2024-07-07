@@ -4,7 +4,7 @@
 #### Comando para iniciar app: `npm start`
 
 ## Sistema para Distribuidora
-__Distribuidora del Haras__ es un negocio relacionado con la compra y venta de panificados.
+__Distribuidora del Haras__ es un negocio relacionado con la compra y venta de productos panificados.
 El propósito fundamental del sistema propuesto  es optimizar y unificar las operaciones clave de la empresa, ofrece a los clientes la posibilidad de realizar pedidos de panificados de manera conveniente y eficiente. En esta plataforma, los usuarios encontrarán un catálogo completo de productos que incluye imágenes, y precios. 
 
 Al seleccionar los productos deseados, los clientes pueden agregarlos al carrito de compra. El proceso de pedido se realiza a través de un formulario intuitivo que permite especificar detalles como la cantidad de cada producto, preferencias de entrega, fecha y hora deseadas, así como información de contacto. Para una experiencia más personalizada, se ofrece la opción de registro de cuenta, donde los clientes pueden guardar sus preferencias de compra y acceder a su historial de pedidos.
