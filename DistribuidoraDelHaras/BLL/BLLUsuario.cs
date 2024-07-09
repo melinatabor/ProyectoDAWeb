@@ -34,12 +34,14 @@ namespace BLL
             return MPPUsuario.Listar();
         }
 
-        public static void Login(BEUsuario usuario)
+        public static BEUsuario Login(BEUsuario usuario)
         {
             try
             {
                 BEUsuario usuarioExistente = BuscarUsuario(usuario)
                     ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
+
+                SesionManager.Login(usuarioExistente);
 
                 BEBitacora bitacora = new BEBitacora()
                 {
@@ -49,6 +51,8 @@ namespace BLL
                 };
 
                 BLLBitacora.Agregar(bitacora);
+
+                return usuarioExistente;
             }
             catch (Exception ex) { throw ex; }
         }
@@ -62,5 +66,6 @@ namespace BLL
             }
             catch (Exception ex) { throw ex; }
         }
+
     }
 }
