@@ -1,7 +1,10 @@
 ﻿
+using Abstraccion;
+using System.Collections.Generic;
+
 namespace BE
 {
-    public class BEUsuario
+    public class BEUsuario : IUsuario
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
@@ -10,5 +13,7 @@ namespace BE
         public string Username { get; set; }
         public string Password { get; set; }
         public bool Activo { get; set; }
+        public int Rol { get; set; }
+        public string DigitoVerificadorH { get; set; }
     }
 }
