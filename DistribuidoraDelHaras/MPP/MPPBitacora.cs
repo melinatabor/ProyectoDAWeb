@@ -38,7 +38,6 @@ namespace MPP
             {
                 bitacora.Id = Convert.ToInt32(fila["Id"]);
                 bitacora.Usuario = fila["Usuario"].ToString();
-                bitacora.Tipo = fila["Tipo"].ToString();
                 bitacora.Mensaje = fila["Mensaje"].ToString();
                 bitacora.Fecha = Convert.ToDateTime(fila["Fecha"]);
 
@@ -58,7 +57,7 @@ namespace MPP
 
                 Hashtable parametros = ExtraerParametros(criteria);
 
-                string query = $"SELECT b.id AS 'Id', u.username AS 'Usuario', bt.nombre AS 'Tipo', b.Mensaje, b.Fecha FROM Bitacora AS b INNER JOIN Usuario u ON u.id = b.usuario INNER JOIN BitacoraTipo bt ON bt.id = b.tipo WHERE (@Usuario IS NULL OR u.Username = @Usuario) AND (@Tipo IS NULL OR bt.Id = @Tipo) AND (b.Fecha BETWEEN @Desde AND @Hasta) ORDER BY b.Fecha DESC OFFSET @Page ROWS FETCH NEXT @Filas ROWS ONLY";
+                string query = $"SELECT b.id AS 'Id', u.username AS 'Usuario', b.Mensaje, b.Fecha FROM Bitacora AS b INNER JOIN Usuario u ON u.id = b.usuario WHERE (@Usuario IS NULL OR u.Username = @Usuario)";
 
                 DataTable table = Acceso.ExecuteDataTable(query, parametros);
 
