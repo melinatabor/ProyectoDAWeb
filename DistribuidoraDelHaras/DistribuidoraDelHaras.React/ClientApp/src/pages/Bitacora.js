@@ -1,8 +1,14 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../components/UserProvider';
+import { useNavigate } from 'react-router-dom';
+
 import '../styles/bitacora.css';
 
 export const Bitacora = () => {
     const [logs, setLogs] = useState([]);
+    const { isAuthenticated } = useContext(UserContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
             fetchBitacoraData();
@@ -28,6 +34,20 @@ export const Bitacora = () => {
             console.log('Error al obtener los datos:', error);
         }
     };
+
+    const onClick = () => {
+        navigate('/login');
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="bitacora-container">
+                <h1>Error</h1>
+                <p>Inicia sesión con un usuario de tipo admin para acceder a esta página.</p>
+                <button onClick={onClick}>Ir al Login</button>
+            </div>
+        );
+    }
 
     return (
         <div className="bitacora-container">
