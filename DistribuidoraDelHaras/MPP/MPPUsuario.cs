@@ -22,8 +22,9 @@ namespace MPP
                 parametros.Add("@Password", usuario.Password);
                 parametros.Add("@Activo", usuario.Activo);
                 parametros.Add("@Rol", usuario.Rol);
+                parametros.Add("@DVH", usuario.DigitoVerificadorH);
 
-                string query = $"INSERT INTO Usuario (Nombre, Apellido, Email, Username, Password, Activo, Rol) VALUES (@Nombre, @Apellido, @Email, @Username, @Password, @Activo, @Rol)";
+                string query = $"INSERT INTO Usuario (Nombre, Apellido, Email, Username, Password, Activo, Rol, DigitoVerificadorH) VALUES (@Nombre, @Apellido, @Email, @Username, @Password, @Activo, @Rol, @DVH)";
 
                 return Acceso.ExecuteNonQuery(query, parametros);
             }
@@ -51,6 +52,7 @@ namespace MPP
                     foreach (DataRow fila in table.Rows)
                     {
                         BEUsuario u = new BEUsuario();
+                        u.DigitoVerificadorH = fila["DigitoVerificadorH"].ToString();
                         return Llenar(fila, u);
                     }
                 }
@@ -130,6 +132,44 @@ namespace MPP
             catch (Exception ex) { throw ex; }
         }
 
+        public static string ObtenerDigitoVerificadorVertical()
+        {
+            try
+            {
+                string query = "SELECT DigitoVerificadorVertical FROM DigitoVerificadorVertical";
+                DataTable table = Acceso.ExecuteDataTable(query, null);
 
+                if (table.Rows.Count == 1)
+                {
+                    DataRow row = table.Rows[0];
+                    return row["DigitoVerificadorVertical"].ToString();
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public static void ActualizarDigitoVerificadorVertical(string dvvCalculado)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@DigitoVerificadorVertical", dvvCalculado);
+                string query = "UPDATE DigitoVerificadorVertical SET DigitoVerificadorVertical = @DigitoVerificadorVertical WHERE Id = 1";
+
+                Acceso.ExecuteNonQuery(query, parametros);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
