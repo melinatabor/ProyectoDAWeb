@@ -53,6 +53,7 @@ namespace DistribuidoraDelHaras.React.Controllers
             try
             {
                 BLLUsuario.Agregar(model);
+                BLLUsuario.RecalcularDigitoVerificadorVertical();
                 return Ok(new
                 {
                     username = model.Username,

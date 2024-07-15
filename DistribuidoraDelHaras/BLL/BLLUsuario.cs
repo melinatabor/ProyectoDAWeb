@@ -22,6 +22,16 @@ namespace BLL
             catch (Exception ex) { throw ex; }
         }
 
+        public static void RecalcularDigitoVerificadorVertical()
+        {
+            try
+            {
+                string dvvCalculado = DigitoVerificador.RunVertical(BLLUsuario.Listar());
+                MPPUsuario.ActualizarDigitoVerificadorVertical(dvvCalculado);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         public static bool Editar(BEUsuario usuario)
         {
             try
@@ -82,6 +92,7 @@ namespace BLL
             string dvvCalculado = DigitoVerificador.RunVertical(BLLUsuario.Listar());
             return dvvCalculado != MPPUsuario.ObtenerDigitoVerificadorVertical();
         }
+
 
         private static bool HuboModificacionesExternas(BEUsuario usuarioExistente)
         {
