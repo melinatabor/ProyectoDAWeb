@@ -11,6 +11,5 @@ namespace Abstraccion
     {
         string Username { get; set; }
         string Password { get; set; }
-        int Rol { get; set; }
     }
 }

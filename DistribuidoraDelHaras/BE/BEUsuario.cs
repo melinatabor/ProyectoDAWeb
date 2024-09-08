@@ -13,7 +13,6 @@ namespace BE
         public string Username { get; set; }
         public string Password { get; set; }
         public bool Activo { get; set; }
-        public int Rol { get; set; }
         public string DigitoVerificadorH { get; set; }
     }
 }

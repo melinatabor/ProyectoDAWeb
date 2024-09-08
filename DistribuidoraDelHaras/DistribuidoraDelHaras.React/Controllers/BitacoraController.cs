@@ -16,14 +16,14 @@ namespace DistribuidoraDelHaras.React.Controllers
             try
             {
                 DateTime desde = new DateTime(2024, 1, 1, 0, 0, 0);
-                DateTime hasta = new DateTime(2024, 7, 7, 23, 59, 59);
+                DateTime hasta = new DateTime(2024, 12, 31, 23, 59, 59);
 
                 BEBitacoraCriteria criteria = new BEBitacoraCriteria()
                 {
                     Desde = desde,
                     Hasta = hasta,
                     Tipo = 1,
-                    Usuario = "admin",
+                    Usuario = null,
                     Page = 1,
                     RowPerPage = 5
                 };
