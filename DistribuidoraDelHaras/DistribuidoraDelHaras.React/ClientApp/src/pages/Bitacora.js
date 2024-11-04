@@ -11,7 +11,7 @@ export const Bitacora = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-            fetchBitacoraData();
+        fetchBitacoraData();
     }, []);
 
     const fetchBitacoraData = async () => {

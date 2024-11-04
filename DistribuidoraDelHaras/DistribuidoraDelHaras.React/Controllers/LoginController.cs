@@ -21,8 +21,7 @@ namespace DistribuidoraDelHaras.React.Controllers
                     nombre = user.Nombre,
                     apellido = user.Apellido,
                     email = user.Email,
-                    username =  user.Username,
-                    rol = user.Rol,
+                    username =  user.Username
                 });
             }
             catch (Exception ex)
