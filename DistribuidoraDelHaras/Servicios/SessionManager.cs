@@ -26,7 +26,7 @@ namespace Servicios
                     _session._usuario = usuario;
                 }
                 else
-                    throw new Exception("Sesion no iniciada");
+                    throw new Exception("Sesion ya iniciada");
             }
             catch (Exception ex)
             {

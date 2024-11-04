@@ -53,11 +53,12 @@ namespace BLL
             {
                 BEUsuario usuarioExistente = BuscarUsuario(usuario)
                     ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
+
                 if (HuboModificacionesExternas(usuarioExistente))
                     throw new Exception($"El usuario {usuarioExistente.Nombre} ha sido modificado. Por favor contacte al administrador.");
 
-                //if (InformacionCorrupta())
-                //    throw new Exception("La base de datos ha sido modificada. Por favor contacte al administrador.");
+                if (InformacionCorrupta())
+                    throw new Exception("La base de datos ha sido modificada. Por favor contacte al administrador.");
 
                 SesionManager.Login(usuarioExistente);
 
