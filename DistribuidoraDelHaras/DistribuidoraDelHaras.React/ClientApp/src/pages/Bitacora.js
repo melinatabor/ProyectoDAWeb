@@ -1,13 +1,12 @@
-﻿/* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useEffect, useContext } from 'react';
-import { UserContext } from '../components/UserProvider';
+﻿import React, { useState, useEffect } from 'react';
+import { useLogin } from '../hooks/useLogin';
 import { useNavigate } from 'react-router-dom';
 
 import '../styles/bitacora.css';
 
 export const Bitacora = () => {
     const [logs, setLogs] = useState([]);
-    const { isAuthenticated } = useContext(UserContext);
+    const { isAuthenticated } = useLogin();
     const navigate = useNavigate();
 
     useEffect(() => {

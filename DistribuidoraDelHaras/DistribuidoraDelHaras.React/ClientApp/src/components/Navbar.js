@@ -1,14 +1,15 @@
-﻿import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+﻿import { Link, useNavigate } from 'react-router-dom';
 import '../styles/navbar.css';
 import logo from '../assets/logo.jpg';
-import { UserContext } from '../components/UserProvider';
+import { useLogin } from '../hooks/useLogin';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export const Navbar = () => {
     const navigate = useNavigate();
-    const { user, updateUser } = useContext(UserContext);
+    const { user, isAuthenticated, logoutUser, getUserFromStorage } = useLogin();
+    console.log(isAuthenticated);
+    const currentUser = (user || getUserFromStorage()) && isAuthenticated;
 
     const handleLogout = async () => {
         try {
@@ -20,7 +21,7 @@ export const Navbar = () => {
             });
 
             if (response.ok) {
-                updateUser(null);
+                logoutUser();
                 navigate("/login");
             } else {
                 const errorData = await response.json();
@@ -74,20 +75,20 @@ export const Navbar = () => {
                     <li><Link to="/#about">Nosotros</Link></li>
                     <li><Link to="/#contact">Contacto</Link></li>
                     {
-                        user && user.rol === 1 && <li><Link to="/bitacora">Bitacora</Link></li>
+                        currentUser && currentUser.rol === 1 && <li><Link to="/bitacora">Bitacora</Link></li>
                     }
                     {
-                        user && user.rol === 2 && <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
+                        currentUser && currentUser.rol === 2 && <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
                     }
-                    {user && user.rol === 3 && (
+                    {currentUser && currentUser.rol === 3 && (
                         <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>
                     )}
                 </ul>
                 <div className="navbar-user">
-                    {user ? (
+                    {isAuthenticated ? (
                         <>
                             <AccountCircleIcon className="user-icon" />
-                            <span className="user-name">{user.username}</span>
+                            <span className="user-name">{currentUser.username}</span>
                             <button className="logout-button" onClick={handleLogout}>Cerrar Sesión</button>
                         </>
                     ) : (
