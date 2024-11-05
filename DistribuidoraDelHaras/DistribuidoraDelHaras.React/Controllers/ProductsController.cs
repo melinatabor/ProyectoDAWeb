@@ -39,8 +39,6 @@ namespace DistribuidoraDelHaras.React.Controllers
             }
         }
 
-        
-
         [HttpGet("products/{id?}")]
         public IActionResult GetProducts(int? id = null)
         {

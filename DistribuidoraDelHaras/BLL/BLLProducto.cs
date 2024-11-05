@@ -83,5 +83,11 @@ namespace BLL
                 throw ex;
             }
         }
+
+        public static async Task<string> GetApiProductTest()
+        {
+            var service = new TestAPIWebService();
+            return await service.GetProducts();
+        }
     }
 }

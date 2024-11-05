@@ -11,13 +11,16 @@ namespace DAL
         private static SqlCommand _command;
         private static SqlTransaction _transaction;
 
-        public static DataTable ExecuteDataTable(string query, Hashtable parametros)
+        public static DataTable ExecuteDataTable(string query, Hashtable parametros, bool isStoredProcedure = false)
         {
             DataTable table = new DataTable();
 
             try
             {
                 _command = new SqlCommand(query, _connection);
+
+                if (isStoredProcedure)
+                    _command.CommandType = CommandType.StoredProcedure;
 
                 if (parametros != null)
                 {
@@ -42,7 +45,7 @@ namespace DAL
             return table;
         }
 
-        public static bool ExecuteNonQuery(string query, Hashtable parametros)
+        public static bool ExecuteNonQuery(string query, Hashtable parametros, bool isStoredProcedure = false)
         {
             try
             {
@@ -51,7 +54,7 @@ namespace DAL
                 _transaction = _connection.BeginTransaction();
 
                 _command = new SqlCommand(query, _connection);
-                _command.CommandType = CommandType.Text;
+                _command.CommandType = isStoredProcedure ? CommandType.StoredProcedure : CommandType.Text;
                 _command.Transaction = _transaction;
 
                 if (parametros != null)
@@ -79,13 +82,13 @@ namespace DAL
             }
         }
 
-        public static int ExecuteScalar(string query, Hashtable parametros)
+        public static int ExecuteScalar(string query, Hashtable parametros, bool isStoredProcedure = false)
         {
             try
             {
                 _connection.Open();
                 _command = new SqlCommand(query, _connection);
-                _command.CommandType = CommandType.Text;
+                _command.CommandType = isStoredProcedure ? CommandType.StoredProcedure : CommandType.Text;
 
                 if (parametros != null)
                 {
