@@ -1,10 +1,10 @@
-﻿import React, { useContext, useState } from "react";
-import { UserContext } from "../components/UserProvider";
+﻿import React, { useState } from "react";
+import { useLogin } from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const navigate = useNavigate();
-    const { updateUser } = useContext(UserContext);
+    const { loginUser } = useLogin();
     const [username, setUser] = useState("");
     const [password, setPassword] = useState("");
 
@@ -22,7 +22,8 @@ const Login = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                updateUser(data); 
+                console.log(data, 'holia');
+                loginUser(data); 
                 navigate("/");
             } else {
                 const errorData = await response.json();

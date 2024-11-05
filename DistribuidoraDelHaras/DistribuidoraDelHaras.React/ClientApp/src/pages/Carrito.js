@@ -1,10 +1,10 @@
-﻿import React, { useContext } from 'react';
+﻿import React from 'react';
 import { Card, CardContent, CardMedia, Typography, CardActions, Button, Grid, Container } from '@mui/material';
-import { UserContext } from '../components/UserProvider';
+import { useLogin } from '../hooks/useLogin';
 import { useNavigate } from 'react-router-dom';
 
 export const Carrito = ({ cart, removeFromCart }) => {
-    const { isAuthenticated } = useContext(UserContext);
+    const { isAuthenticated } = useLogin();
     const navigate = useNavigate();
 
     if (!isAuthenticated) navigate('/login');
