@@ -29,11 +29,7 @@ namespace BLL
             try
             {
                 string dvvBitacora = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
-                string dvvProducto = DigitoVerificador.RunVertical(BLLProducto.Listar());
-
-                string dvvCalculado = DigitoVerificador.Run(dvvBitacora + dvvProducto);
-
-                MPPBitacora.ActualizarDigitoVerificadorVertical(dvvCalculado);
+                BLLDigitoVerificador.ActualizarDigitoVerificadorVertical(dvvBitacora, BEDigitoVerificador.ENTIDAD_BITACORA);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -47,6 +43,17 @@ namespace BLL
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public static void RecalcularDVH()
+        {
+            List<BEBitacora> bitacoras = ListarTodo();
+
+            foreach (var bitacora in bitacoras)
+            {
+                bitacora.DigitoVerificadorH = DigitoVerificador.Run(bitacora);
+                MPPBitacora.ActualizarDVH(bitacora);
             }
         }
     }

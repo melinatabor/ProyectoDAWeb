@@ -31,12 +31,8 @@ namespace BLL
         {
             try
             {
-                string dvvBitacora = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
                 string dvvProducto = DigitoVerificador.RunVertical(BLLProducto.Listar());
-
-                string dvvCalculado = DigitoVerificador.Run(dvvBitacora + dvvProducto);
-
-                MPPProducto.ActualizarDigitoVerificadorVertical(dvvCalculado);
+                BLLDigitoVerificador.ActualizarDigitoVerificadorVertical(dvvProducto, BEDigitoVerificador.ENTIDAD_PRODUCTO);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -110,26 +106,15 @@ namespace BLL
             return await service.GetProducts();
         }
 
-        public static void ActualizarDVHProductos()
+        public static void RecalcularDVH()
         {
-            try
-            {
-                List<BEProducto> productos = Listar(); 
+            List<BEProducto> productos = Listar();
 
-                foreach (var producto in productos)
-                {
-                    if (string.IsNullOrEmpty(producto.DigitoVerificadorH))
-                    {
-                        producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
-                        MPPProducto.ActualizarDVH(producto);
-                    }
-                }
-            }
-            catch (Exception ex)
+            foreach (var producto in productos)
             {
-                throw new Exception($"Error al actualizar DVH de productos: {ex.Message}");
+                producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
+                MPPProducto.ActualizarDVH(producto);
             }
         }
-
     }
 }

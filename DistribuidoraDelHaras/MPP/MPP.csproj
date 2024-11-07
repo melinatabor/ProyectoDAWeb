@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MPPBitacora.cs" />
+    <Compile Include="MPPDigitoVerificador.cs" />
     <Compile Include="MPPPermiso.cs" />
     <Compile Include="MPPProducto.cs" />
     <Compile Include="MPPUsuario.cs" />

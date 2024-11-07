@@ -1,5 +1,4 @@
-﻿using Abstraccion;
-using BE;
+﻿using BE;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,9 +14,6 @@ namespace Servicios.DigitoVerificador
         {
             try
             {
-                //// Necesario ya que la fecha puede ser la misma para dos bitácoras
-                //string uniqueId = Guid.NewGuid().ToString();
-
                 _digitoVerificador = bitacora.Mensaje + bitacora.Fecha.ToString("o");
 
                 return Encriptador.Run(_digitoVerificador);
@@ -39,19 +35,6 @@ namespace Servicios.DigitoVerificador
             catch (Exception ex)
             {
                 throw new Exception($"Ha ocurrido un error al generar el dígito verificador de producto: {ex.Message}");
-            }
-        }
-
-        // Crea un dígito verificador compuesto por Bitacora + Producto
-        public static string Run(string dvhCompuesto)
-        {
-            try
-            {
-                return Encriptador.Run(dvhCompuesto);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Ha ocurrido un error al generar el dígito verificador: {ex.Message}", ex);
             }
         }
 

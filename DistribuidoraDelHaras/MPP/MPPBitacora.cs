@@ -135,20 +135,21 @@ namespace MPP
             }
         }
 
-        public static void ActualizarDigitoVerificadorVertical(string dvvCalculado)
+        public static void ActualizarDVH(BEBitacora bitacora)
         {
             try
             {
                 Hashtable parametros = new Hashtable();
+                parametros.Add("@Id", bitacora.Id);
+                parametros.Add("@DVH", bitacora.DigitoVerificadorH);
 
-                parametros.Add("@DigitoVerificadorVertical", dvvCalculado);
-                string query = "UPDATE DigitoVerificadorVertical SET DigitoVerificadorVertical = @DigitoVerificadorVertical WHERE Id = 1";
+                string query = "UPDATE Bitacora SET DigitoVerificadorH = @DVH WHERE Id = @Id";
 
                 Acceso.ExecuteNonQuery(query, parametros);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception($"Error al actualizar DVH de bitacora: {ex.Message}");
             }
         }
     }

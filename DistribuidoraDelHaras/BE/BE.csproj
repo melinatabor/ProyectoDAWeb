@@ -45,6 +45,7 @@
     <Compile Include="BEBitacora.cs" />
     <Compile Include="BEBitacoraCriteria.cs" />
     <Compile Include="BEBitacoraFiltrada.cs" />
+    <Compile Include="BEDigitoVerificador.cs" />
     <Compile Include="BEFamilia.cs" />
     <Compile Include="BEPermiso.cs" />
     <Compile Include="BEPermisoSimple.cs" />

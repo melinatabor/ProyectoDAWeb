@@ -10,7 +10,8 @@ const context = [
     "/api/login",
     "/api/session",
     "/api/products",
-    "/api/test"
+    "/api/test",
+    "/api/recalculardv"
 ];
 
 module.exports = function(app) {

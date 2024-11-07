@@ -59,7 +59,6 @@ namespace MPP
             }
         }
 
-
         public static List<BEProducto> Listar()
         {
             try
@@ -147,7 +146,6 @@ namespace MPP
             }
         }
 
-
         private static BEProducto Llenar(DataRow row, BEProducto producto)
         {
             try
@@ -160,23 +158,6 @@ namespace MPP
                 return producto;
             }
             catch (Exception ex) { throw ex; }
-        }
-
-        public static void ActualizarDigitoVerificadorVertical(string dvvCalculado)
-        {
-            try
-            {
-                Hashtable parametros = new Hashtable();
-
-                parametros.Add("@DigitoVerificadorVertical", dvvCalculado);
-                string query = "UPDATE DigitoVerificadorVertical SET DigitoVerificadorVertical = @DigitoVerificadorVertical WHERE Id = 1";
-
-                Acceso.ExecuteNonQuery(query, parametros);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         public static void ActualizarDVH(BEProducto producto)
