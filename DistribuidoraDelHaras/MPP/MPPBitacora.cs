@@ -21,8 +21,9 @@ namespace MPP
                 parametros.Add("@Usuario", bitacora.Usuario);
                 parametros.Add("@Tipo", bitacora.Tipo);
                 parametros.Add("@Mensaje", bitacora.Mensaje);
+                parametros.Add("@DVH", bitacora.DigitoVerificadorH);
 
-                string query = $"INSERT INTO Bitacora (Usuario, Tipo, Mensaje, Fecha) VALUES (@Usuario, @Tipo, @Mensaje, getdate())";
+                string query = $"INSERT INTO Bitacora (Usuario, Tipo, Mensaje, Fecha, DigitoVerificadorH) VALUES (@Usuario, @Tipo, @Mensaje, getdate(), @DVH)";
 
                 return Acceso.ExecuteNonQuery(query, parametros);
             }
@@ -98,6 +99,52 @@ namespace MPP
                     parametros["@Tipo"] = DBNull.Value;
 
                 return parametros;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static List<BEBitacora> ListarTodo()
+        {
+            try
+            {
+                List<BEBitacora> lista = new List<BEBitacora>();
+
+                string query = "SELECT Mensaje, Fecha FROM Bitacora";
+
+                DataTable table = Acceso.ExecuteDataTable(query, null);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEBitacora bitacora = new BEBitacora();
+                        bitacora.Mensaje = fila["Mensaje"].ToString();
+                        bitacora.Fecha = Convert.ToDateTime(fila["Fecha"]);
+                        lista.Add(bitacora);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void ActualizarDigitoVerificadorVertical(string dvvCalculado)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@DigitoVerificadorVertical", dvvCalculado);
+                string query = "UPDATE DigitoVerificadorVertical SET DigitoVerificadorVertical = @DigitoVerificadorVertical WHERE Id = 1";
+
+                Acceso.ExecuteNonQuery(query, parametros);
             }
             catch (Exception ex)
             {

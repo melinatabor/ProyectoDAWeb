@@ -16,18 +16,7 @@ namespace BLL
             {
                 usuario.Activo = true;
                 usuario.Password = Encriptador.Run(usuario.Password);
-                usuario.DigitoVerificadorH = DigitoVerificador.Run(usuario);
                 return MPPUsuario.Agregar(usuario);
-            }
-            catch (Exception ex) { throw ex; }
-        }
-
-        public static void RecalcularDigitoVerificadorVertical()
-        {
-            try
-            {
-                string dvvCalculado = DigitoVerificador.RunVertical(BLLUsuario.Listar());
-                MPPUsuario.ActualizarDigitoVerificadorVertical(dvvCalculado);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -36,7 +25,6 @@ namespace BLL
         {
             try
             {
-                usuario.DigitoVerificadorH = DigitoVerificador.Run(usuario);
                 return MPPUsuario.Editar(usuario);
             }
             catch (Exception ex) { throw ex; }
@@ -54,11 +42,9 @@ namespace BLL
                 BEUsuario usuarioExistente = BuscarUsuario(usuario)
                     ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
 
-                if (HuboModificacionesExternas(usuarioExistente))
-                    throw new Exception($"El usuario {usuarioExistente.Nombre} ha sido modificado. Por favor contacte al administrador.");
-
-                if (InformacionCorrupta())
-                    throw new Exception("La base de datos ha sido modificada. Por favor contacte al administrador.");
+                //Verificar si hubo modificaciones en Bitacora o Productos
+                if (HuboModificacionesExternas())
+                    throw new Exception("Se detectaron modificaciones en la base de datos. Por favor contacte al administrador.");
 
                 SesionManager.Login(usuarioExistente);
 
@@ -86,18 +72,19 @@ namespace BLL
             catch (Exception ex) { throw ex; }
         }
 
-        private static bool InformacionCorrupta()
+        private static bool HuboModificacionesExternas()
         {
-            // Generar Digito Verificador Vertical con los datos de la tabla de usuarios.
-            // El valor dvvCalculado deberia coincidir con el de la tabla DigitoVerificadorVertical
-            string dvvCalculado = DigitoVerificador.RunVertical(BLLUsuario.Listar());
-            return dvvCalculado != MPPUsuario.ObtenerDigitoVerificadorVertical();
-        }
+            // Calcular los DVV actuales para Bitacora y Productos
+            string dvvBitacoraActual = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
+            string dvvProductoActual = DigitoVerificador.RunVertical(BLLProducto.Listar());
 
+            string dvvCalculado = DigitoVerificador.Run(dvvBitacoraActual + dvvProductoActual);
 
-        private static bool HuboModificacionesExternas(BEUsuario usuarioExistente)
-        {
-            return usuarioExistente.DigitoVerificadorH != DigitoVerificador.Run(usuarioExistente);
+            // Obtener el DVV guardado en la tabla DigitoVerificadorVertical
+            string dvvGuardado = MPPUsuario.ObtenerDigitoVerificadorVertical();
+
+            // Comparar el DVV calculado con el guardado
+            return dvvCalculado != dvvGuardado;
         }
     }
 }

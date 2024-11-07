@@ -21,10 +21,11 @@ namespace MPP
                     { "@Nombre", producto.Nombre },
                     { "@Precio", producto.Precio },
                     { "@Descripcion", producto.Descripcion },
-                    { "@ImagenUrl", producto.ImagenUrl }
+                    { "@ImagenUrl", producto.ImagenUrl },
+                    { "@DVH", producto.DigitoVerificadorH }
                 };
 
-                string query = "INSERT INTO Producto (Nombre, Precio, Descripcion, ImagenUrl) VALUES (@Nombre, @Precio, @Descripcion, @ImagenUrl)";
+                string query = "INSERT INTO Producto (Nombre, Precio, Descripcion, ImagenUrl, DigitoVerificadorH) VALUES (@Nombre, @Precio, @Descripcion, @ImagenUrl, @DVH)";
 
                 return Acceso.ExecuteNonQuery(query, hashtable);
             }
@@ -44,10 +45,11 @@ namespace MPP
                     { "@Nombre", producto.Nombre },
                     { "@Precio", producto.Precio },
                     { "@Descripcion", producto.Descripcion },
-                    { "@ImagenUrl", producto.ImagenUrl }
+                    { "@ImagenUrl", producto.ImagenUrl },
+                    { "@DVH", producto.DigitoVerificadorH }
                 };
 
-                string query = "UPDATE Producto SET Nombre = @Nombre, Precio = @Precio, Descripcion = @Descripcion, ImagenUrl = @ImagenUrl WHERE Id = @Id";
+                string query = "UPDATE Producto SET Nombre = @Nombre, Precio = @Precio, Descripcion = @Descripcion, ImagenUrl = @ImagenUrl, DigitoVerificadorH = @DVH WHERE Id = @Id";
 
                 return Acceso.ExecuteNonQuery(query, hashtable);
             }
@@ -159,5 +161,41 @@ namespace MPP
             }
             catch (Exception ex) { throw ex; }
         }
+
+        public static void ActualizarDigitoVerificadorVertical(string dvvCalculado)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@DigitoVerificadorVertical", dvvCalculado);
+                string query = "UPDATE DigitoVerificadorVertical SET DigitoVerificadorVertical = @DigitoVerificadorVertical WHERE Id = 1";
+
+                Acceso.ExecuteNonQuery(query, parametros);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void ActualizarDVH(BEProducto producto)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+                parametros.Add("@Id", producto.Id);
+                parametros.Add("@DVH", producto.DigitoVerificadorH);
+
+                string query = "UPDATE Producto SET DigitoVerificadorH = @DVH WHERE Id = @Id";
+
+                Acceso.ExecuteNonQuery(query, parametros);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al actualizar DVH del producto: {ex.Message}");
+            }
+        }
+
     }
 }

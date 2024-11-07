@@ -13,6 +13,7 @@ namespace BE
         public string Mensaje { get; set; }
         public DateTime Fecha { get; set; }
         public BitacoraTipo Tipo { get; set; }
+        public string DigitoVerificadorH { get; set; }
 
         public enum BitacoraTipo
         {

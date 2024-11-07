@@ -10,35 +10,82 @@ namespace Servicios.DigitoVerificador
     {
         private static string _digitoVerificador;
         private static StringBuilder _digitoVerificadorVertical;
-        public static string Run(BEUsuario usuario)
+
+        public static string Run(BEBitacora bitacora)
         {
             try
             {
-                _digitoVerificador = usuario.Nombre + usuario.Apellido + usuario.Email + usuario.Username;
+                //// Necesario ya que la fecha puede ser la misma para dos bitácoras
+                //string uniqueId = Guid.NewGuid().ToString();
+
+                _digitoVerificador = bitacora.Mensaje + bitacora.Fecha.ToString("o");
 
                 return Encriptador.Run(_digitoVerificador);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Ha ocurrido un error al generar el digito verificador: {ex.Message}");
+                throw new Exception($"Ha ocurrido un error al generar el dígito verificador de bitácora: {ex.Message}");
             }
         }
 
-        public static string RunVertical(List<BEUsuario> usuarios)
+        public static string Run(BEProducto producto)
+        {
+            try
+            {
+                _digitoVerificador = producto.Nombre + producto.Precio + producto.Descripcion + producto.ImagenUrl;
+
+                return Encriptador.Run(_digitoVerificador);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ha ocurrido un error al generar el dígito verificador de producto: {ex.Message}");
+            }
+        }
+
+        // Crea un dígito verificador compuesto por Bitacora + Producto
+        public static string Run(string dvhCompuesto)
+        {
+            try
+            {
+                return Encriptador.Run(dvhCompuesto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ha ocurrido un error al generar el dígito verificador: {ex.Message}", ex);
+            }
+        }
+
+        public static string RunVertical(List<BEBitacora> bitacoras)
         {
             try
             {
                 _digitoVerificadorVertical = new StringBuilder();
 
-                foreach (var usuario in usuarios)
-                    _digitoVerificadorVertical.Append(Run(usuario));
+                foreach (var bitacora in bitacoras)
+                    _digitoVerificadorVertical.Append(Run(bitacora));
 
-                string s = Encriptador.Run(_digitoVerificadorVertical.ToString());
-                return s;
+                return Encriptador.Run(_digitoVerificadorVertical.ToString());
             }
             catch (Exception ex)
             {
-                throw new Exception($"Ha ocurrido un error al generar el digito verificador vertical: {ex.Message}");
+                throw new Exception($"Ha ocurrido un error al generar el dígito verificador vertical para bitácoras: {ex.Message}");
+            }
+        }
+
+        public static string RunVertical(List<BEProducto> productos)
+        {
+            try
+            {
+                _digitoVerificadorVertical = new StringBuilder();
+
+                foreach (var producto in productos)
+                    _digitoVerificadorVertical.Append(Run(producto));
+
+                return Encriptador.Run(_digitoVerificadorVertical.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ha ocurrido un error al generar el dígito verificador vertical para productos: {ex.Message}");
             }
         }
     }

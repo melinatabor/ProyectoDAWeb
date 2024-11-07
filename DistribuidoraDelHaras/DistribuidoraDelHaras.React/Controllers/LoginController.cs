@@ -3,6 +3,7 @@ using BLL;
 using Microsoft.AspNetCore.Mvc;
 using Servicios;
 using System.Reflection;
+using static BE.BEBitacora;
 
 namespace DistribuidoraDelHaras.React.Controllers
 {
@@ -36,8 +37,22 @@ namespace DistribuidoraDelHaras.React.Controllers
         {
             try
             {
+                int usuarioId = SesionManager.GetUsuario().Id;
+
                 SesionManager.Logout();
-                return Ok();
+
+                BEBitacora bitacora = new BEBitacora()
+                {
+                    Usuario = usuarioId,
+                    Tipo = BitacoraTipo.INFO,
+                    Mensaje = "El usuario finalizó la sesión"
+                };
+                BLLBitacora.Agregar(bitacora);
+
+                return Ok(new 
+                { 
+                    message = "El usuario ha finalizado la sesión exitosamente." 
+                });
             }
             catch (Exception ex)
             {
@@ -52,7 +67,7 @@ namespace DistribuidoraDelHaras.React.Controllers
             try
             {
                 BLLUsuario.Agregar(model);
-                BLLUsuario.RecalcularDigitoVerificadorVertical();
+                //BLLUsuario.RecalcularDigitoVerificadorVertical();
                 return Ok(new
                 {
                     username = model.Username,

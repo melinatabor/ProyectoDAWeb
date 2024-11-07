@@ -21,9 +21,8 @@ namespace MPP
                 parametros.Add("@Username", usuario.Username);
                 parametros.Add("@Password", usuario.Password);
                 parametros.Add("@Activo", usuario.Activo);
-                parametros.Add("@DVH", usuario.DigitoVerificadorH);
 
-                string query = $"INSERT INTO Usuario (Nombre, Apellido, Email, Username, Password, Activo, DigitoVerificadorH) VALUES (@Nombre, @Apellido, @Email, @Username, @Password, @Activo, @DVH)";
+                string query = $"INSERT INTO Usuario (Nombre, Apellido, Email, Username, Password, Activo) VALUES (@Nombre, @Apellido, @Email, @Username, @Password, @Activo)";
 
                 return Acceso.ExecuteNonQuery(query, parametros);
             }
@@ -51,7 +50,6 @@ namespace MPP
                     foreach (DataRow fila in table.Rows)
                     {
                         BEUsuario u = new BEUsuario();
-                        u.DigitoVerificadorH = fila["DigitoVerificadorH"].ToString();
                         return Llenar(fila, u);
                     }
                 }

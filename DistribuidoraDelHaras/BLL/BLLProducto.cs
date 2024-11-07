@@ -16,7 +16,10 @@ namespace BLL
         {
             try
             {
-                return MPPProducto.Agregar(producto);
+                producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
+                bool agregado = MPPProducto.Agregar(producto);
+                RecalcularDigitoVerificadorVertical();
+                return agregado;
             }
             catch (Exception ex)
             {
@@ -24,11 +27,28 @@ namespace BLL
             }
         }
 
+        private static void RecalcularDigitoVerificadorVertical()
+        {
+            try
+            {
+                string dvvBitacora = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
+                string dvvProducto = DigitoVerificador.RunVertical(BLLProducto.Listar());
+
+                string dvvCalculado = DigitoVerificador.Run(dvvBitacora + dvvProducto);
+
+                MPPProducto.ActualizarDigitoVerificadorVertical(dvvCalculado);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         public static bool Editar(BEProducto producto)
         {
             try
             {
-                return MPPProducto.Editar(producto);
+                producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
+                bool editado = MPPProducto.Editar(producto);
+                RecalcularDigitoVerificadorVertical();
+                return editado;
             }
             catch (Exception ex)
             {
@@ -89,5 +109,27 @@ namespace BLL
             var service = new TestAPIWebService();
             return await service.GetProducts();
         }
+
+        public static void ActualizarDVHProductos()
+        {
+            try
+            {
+                List<BEProducto> productos = Listar(); 
+
+                foreach (var producto in productos)
+                {
+                    if (string.IsNullOrEmpty(producto.DigitoVerificadorH))
+                    {
+                        producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
+                        MPPProducto.ActualizarDVH(producto);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al actualizar DVH de productos: {ex.Message}");
+            }
+        }
+
     }
 }

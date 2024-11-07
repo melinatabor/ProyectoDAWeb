@@ -69,7 +69,8 @@ namespace Servicios
         {
             try
             {
-                return _session._usuario;
+                return _session?._usuario 
+                    ?? throw new InvalidOperationException("La sesión no está inicializada.");
             }
             catch (Exception ex)
             {
