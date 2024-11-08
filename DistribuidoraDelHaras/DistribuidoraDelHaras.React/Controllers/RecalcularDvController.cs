@@ -22,6 +22,9 @@ namespace DistribuidoraDelHaras.React.Controllers
                 string dvvProductoActual = DigitoVerificador.RunVertical(BLLProducto.Listar());
                 BLLDigitoVerificador.ActualizarDigitoVerificadorVertical(dvvProductoActual, BEDigitoVerificador.ENTIDAD_PRODUCTO);
 
+                BLLAuditoriaCambios.Eliminar();
+                BLLAuditoriaCambios.InsertarProductosIniciales();
+
                 return Ok(new { message = "DVH y DVV recalculados y actualizados exitosamente." });
             }
             catch (Exception ex)

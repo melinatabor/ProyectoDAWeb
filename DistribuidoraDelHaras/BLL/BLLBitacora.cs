@@ -1,5 +1,6 @@
 ﻿using BE;
 using MPP;
+using Servicios;
 using Servicios.DigitoVerificador;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,28 @@ namespace BLL
         public static bool Agregar(BEBitacora bitacora)
         {
             bitacora.DigitoVerificadorH = DigitoVerificador.Run(bitacora);
+            bitacora.Fecha = DateTime.Now;
             bool agregado = MPPBitacora.Agregar(bitacora);
             RecalcularDigitoVerificadorVertical();
+
+            if (agregado)
+            {
+                int idBitacora = MPPBitacora.ObtenerUltimoId();
+
+                bitacora.Id = idBitacora;
+                string datosDespuesString = CSVHelper.ConvertirBitacoraFormatoCSV(bitacora);
+
+                BLLAuditoriaCambios.Agregar(new BEAuditoriaCambios
+                {
+                    Entidad = BEAuditoriaCambios.ENTIDAD_BITACORA,
+                    IdRegistroAfectado = idBitacora,
+                    Operacion = BEAuditoriaCambios.OPERACION_ALTA,
+                    Fecha = DateTime.Now,
+                    DatosAntes = null,
+                    DatosDespues = datosDespuesString
+                });
+            }
+
             return agregado;
         }
 

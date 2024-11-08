@@ -19,6 +19,24 @@ namespace BLL
                 producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
                 bool agregado = MPPProducto.Agregar(producto);
                 RecalcularDigitoVerificadorVertical();
+
+                if (agregado) 
+                { 
+                    int idProducto = MPPProducto.ObtenerUltimoId();
+
+                    producto.Id = idProducto;
+                    string datosDespuesString = CSVHelper.ConvertirProductoFormatoCSV(producto);
+
+                    BLLAuditoriaCambios.Agregar(new BEAuditoriaCambios { 
+                        Entidad = BEAuditoriaCambios.ENTIDAD_PRODUCTO, 
+                        IdRegistroAfectado = idProducto, 
+                        Operacion = BEAuditoriaCambios.OPERACION_ALTA, 
+                        Fecha = DateTime.Now,
+                        DatosAntes = null,
+                        DatosDespues = datosDespuesString
+                    });
+                }
+
                 return agregado;
             }
             catch (Exception ex)
@@ -41,9 +59,28 @@ namespace BLL
         {
             try
             {
+                BEProducto productoAntes = ObtenerPorId(producto.Id);
+
                 producto.DigitoVerificadorH = DigitoVerificador.Run(producto);
                 bool editado = MPPProducto.Editar(producto);
                 RecalcularDigitoVerificadorVertical();
+
+                if (editado)
+                {
+                    string datosAntesString = CSVHelper.ConvertirProductoFormatoCSV(productoAntes);
+                    string datosDespuesString = CSVHelper.ConvertirProductoFormatoCSV(producto);
+
+                    BLLAuditoriaCambios.Agregar(new BEAuditoriaCambios
+                    {
+                        Entidad = BEAuditoriaCambios.ENTIDAD_PRODUCTO,
+                        IdRegistroAfectado = producto.Id,
+                        Operacion = BEAuditoriaCambios.OPERACION_MODIFICACION,
+                        Fecha = DateTime.Now,
+                        DatosAntes = datosAntesString,
+                        DatosDespues = datosDespuesString
+                    });
+                }
+
                 return editado;
             }
             catch (Exception ex)

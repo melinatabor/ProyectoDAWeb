@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLLAuditoriaCambios.cs" />
     <Compile Include="BLLBitacora.cs" />
     <Compile Include="BLLDigitoVerificador.cs" />
     <Compile Include="BLLPermiso.cs" />

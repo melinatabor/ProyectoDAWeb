@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BEAuditoriaCambios.cs" />
     <Compile Include="BEBitacora.cs" />
     <Compile Include="BEBitacoraCriteria.cs" />
     <Compile Include="BEBitacoraFiltrada.cs" />

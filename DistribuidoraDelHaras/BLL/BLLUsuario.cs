@@ -4,6 +4,9 @@ using Servicios;
 using Servicios.DigitoVerificador;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
 using static BE.BEBitacora;
 
 namespace BLL
@@ -42,8 +45,7 @@ namespace BLL
                 BEUsuario usuarioExistente = BuscarUsuario(usuario)
                     ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
 
-                //Verificar si hubo modificaciones en Bitacora o Productos
-                string mensajeModificaciones = HuboModificacionesExternas();
+                string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
                 if (!string.IsNullOrEmpty(mensajeModificaciones))
                     throw new Exception($"Se detectaron modificaciones en la base de datos. {mensajeModificaciones}. Por favor contacte al administrador.");
 
@@ -73,27 +75,127 @@ namespace BLL
             catch (Exception ex) { throw ex; }
         }
 
-        private static string HuboModificacionesExternas()
+        public static string VerificarModificacionesYEliminacionesExternas()
         {
-            // Calcular los DVV actuales de Bitacora y Productos con los guardados
-            string dvvBitacoraActual = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
-            string dvvBitacoraGuardado = BLLDigitoVerificador.ObtenerDigitoVerificadorVertical(BEDigitoVerificador.ENTIDAD_BITACORA);
+            var mensajesDeCambio = new List<string>();
 
+            string dvvBitacoraActual = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
             string dvvProductoActual = DigitoVerificador.RunVertical(BLLProducto.Listar());
+
+            string dvvBitacoraGuardado = BLLDigitoVerificador.ObtenerDigitoVerificadorVertical(BEDigitoVerificador.ENTIDAD_BITACORA);
             string dvvProductoGuardado = BLLDigitoVerificador.ObtenerDigitoVerificadorVertical(BEDigitoVerificador.ENTIDAD_PRODUCTO);
 
-            List<string> modificaciones = new List<string>();
+            bool bitacoraModificada = dvvBitacoraActual != dvvBitacoraGuardado;
+            bool productoModificado = dvvProductoActual != dvvProductoGuardado;
 
-            if (dvvBitacoraActual != dvvBitacoraGuardado)
-                modificaciones.Add(BEDigitoVerificador.ENTIDAD_BITACORA);
+            if (bitacoraModificada)
+            {
+                List<BEAuditoriaCambios> registrosAuditoria = BLLAuditoriaCambios.ListarPorEntidad(BEAuditoriaCambios.ENTIDAD_BITACORA);
+                var registrosActuales = BLLBitacora.ListarTodo();
 
-            if (dvvProductoActual != dvvProductoGuardado)
-                modificaciones.Add(BEDigitoVerificador.ENTIDAD_PRODUCTO);
+                foreach (BEBitacora registro in registrosActuales)
+                {
+                    var auditoria = registrosAuditoria.FirstOrDefault(a => a.IdRegistroAfectado == registro.Id);
+                    if (auditoria != null && !CompararDatosCSV(auditoria.DatosAntes, auditoria.DatosDespues, registro, auditoria.Operacion))
+                    {
+                        mensajesDeCambio.Add($"Registro modificado en Bitacora (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
+                    }
+                }
 
-            if (modificaciones.Count > 0)
-                return $"Las siguientes tablas han sido modificadas externamente: {string.Join(" y ", modificaciones)}";
+                foreach (var auditoria in registrosAuditoria)
+                {
+                    if (!registrosActuales.Any(r => r.Id == auditoria.IdRegistroAfectado))
+                        mensajesDeCambio.Add($"Registro eliminado externamente en Bitacora (ID: {auditoria.IdRegistroAfectado})");
+                }
+            }
 
-            return string.Empty;
+            if (productoModificado)
+            {
+                List<BEAuditoriaCambios> registrosAuditoria = BLLAuditoriaCambios.ListarPorEntidad(BEAuditoriaCambios.ENTIDAD_PRODUCTO);
+                var registrosActuales = BLLProducto.Listar();
+
+                foreach (BEProducto registro in registrosActuales)
+                {
+                    var auditoria = registrosAuditoria.FirstOrDefault(a => a.IdRegistroAfectado == registro.Id);
+                    if (auditoria != null && !CompararDatosCSV(auditoria.DatosAntes, auditoria.DatosDespues, registro, auditoria.Operacion))
+                    {
+                        mensajesDeCambio.Add($"Registro modificado en Producto (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
+                    }
+                }
+
+                foreach (var auditoria in registrosAuditoria)
+                {
+                    if (!registrosActuales.Any(r => r.Id == auditoria.IdRegistroAfectado))
+                        mensajesDeCambio.Add($"Registro eliminado externamente en Producto (ID: {auditoria.IdRegistroAfectado})");
+                }
+            }
+
+            return mensajesDeCambio.Count > 0 ? $"Se detectaron modificaciones en la base de datos. {string.Join(" ", mensajesDeCambio)}. Por favor contacte al administrador." : string.Empty;
         }
+
+        private static bool CompararDatosCSV(string datosAntesCSV, string datosDespuesCSV, object registroActual, string operacion)
+        {
+            if (operacion == BEAuditoriaCambios.OPERACION_ALTA && string.IsNullOrWhiteSpace(datosAntesCSV))
+            {
+                string datosActualCSV = "";
+
+                if (registroActual is BEProducto)
+                    datosActualCSV = CSVHelper.ConvertirProductoFormatoCSV((BEProducto)registroActual);
+                
+                if (registroActual is BEBitacora)
+                    datosActualCSV = CSVHelper.ConvertirBitacoraFormatoCSV((BEBitacora)registroActual);
+
+                return datosActualCSV == datosDespuesCSV;
+            }
+
+            if (string.IsNullOrWhiteSpace(datosAntesCSV))
+                return false;
+
+            var valoresAntes = datosAntesCSV.Split(',');
+
+            if (registroActual is BEProducto)
+            {
+                if (valoresAntes[0] != ((BEProducto)registroActual).Nombre.ToString())
+                    return false;
+
+                if (valoresAntes[1] != ((BEProducto)registroActual).Precio.ToString())
+                    return false;
+
+                if (valoresAntes[2] != ((BEProducto)registroActual).Descripcion.ToString()) 
+                    return false;
+
+                if (valoresAntes[3] != ((BEProducto)registroActual).ImagenUrl.ToString())
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static string ObtenerCamposModificadosCSV(string datosAntesCSV, object registroActual)
+        {
+            if (string.IsNullOrEmpty(datosAntesCSV))
+                return string.Empty;
+
+            var cambios = new List<string>();
+            var valoresAntes = datosAntesCSV.Split(',');
+
+            if (registroActual is BEProducto)
+            {
+                if (valoresAntes[0] != ((BEProducto)registroActual).Nombre.ToString())
+                    cambios.Add("Nombre");
+
+                if (valoresAntes[1] != ((BEProducto)registroActual).Precio.ToString())
+                    cambios.Add("Precio");
+
+                if (valoresAntes[2] != ((BEProducto)registroActual).Descripcion.ToString())
+                    cambios.Add("Descripcion");
+
+                if (valoresAntes[3] != ((BEProducto)registroActual).ImagenUrl.ToString())
+                    cambios.Add("ImagenUrl");
+            }
+
+            return string.Join(", ", cambios);
+        }
+
     }
 }

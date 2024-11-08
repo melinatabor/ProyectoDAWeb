@@ -22,8 +22,9 @@ namespace MPP
                 parametros.Add("@Tipo", bitacora.Tipo);
                 parametros.Add("@Mensaje", bitacora.Mensaje);
                 parametros.Add("@DVH", bitacora.DigitoVerificadorH);
+                parametros.Add("@Fecha", bitacora.Fecha);
 
-                string query = $"INSERT INTO Bitacora (Usuario, Tipo, Mensaje, Fecha, DigitoVerificadorH) VALUES (@Usuario, @Tipo, @Mensaje, getdate(), @DVH)";
+                string query = $"INSERT INTO Bitacora (Usuario, Tipo, Mensaje, Fecha, DigitoVerificadorH) VALUES (@Usuario, @Tipo, @Mensaje, @Fecha, @DVH)";
 
                 return Acceso.ExecuteNonQuery(query, parametros);
             }
@@ -150,6 +151,25 @@ namespace MPP
             catch (Exception ex)
             {
                 throw new Exception($"Error al actualizar DVH de bitacora: {ex.Message}");
+            }
+        }
+
+        public static int ObtenerUltimoId()
+        {
+            try
+            {
+                string query = "SELECT TOP 1 Id FROM Bitacora ORDER BY Id DESC";
+
+                object result = Acceso.ExecuteScalar(query, null);
+
+                if (result != null && int.TryParse(result.ToString(), out int ultimoId))
+                    return ultimoId;
+
+                throw new Exception("No se encontró ningún registro en la tabla Bitacora.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener el último Id de Bitacora: {ex.Message}");
             }
         }
     }

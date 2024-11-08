@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MPPAuditoriaCambios.cs" />
     <Compile Include="MPPBitacora.cs" />
     <Compile Include="MPPDigitoVerificador.cs" />
     <Compile Include="MPPPermiso.cs" />

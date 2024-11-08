@@ -65,7 +65,7 @@ namespace MPP
             {
                 List<BEProducto> lista = new List<BEProducto>();
 
-                string query = "SELECT Id, Nombre, Precio, Descripcion, ImagenUrl FROM Producto";
+                string query = "SELECT Id, Nombre, Precio, Descripcion, ImagenUrl, DigitoVerificadorH FROM Producto";
 
                 DataTable table = Acceso.ExecuteDataTable(query, null);
 
@@ -94,7 +94,7 @@ namespace MPP
                 Hashtable hashtable = new Hashtable();
                 hashtable.Add("@Id", id);
 
-                string query = "SELECT Id, Nombre, Precio, Descripcion, ImagenUrl FROM Producto WHERE Id = @Id";
+                string query = "SELECT Id, Nombre, Precio, Descripcion, ImagenUrl, DigitoVerificadorH FROM Producto WHERE Id = @Id";
 
                 DataTable table = Acceso.ExecuteDataTable(query, hashtable);
 
@@ -124,7 +124,7 @@ namespace MPP
                     { "@Nombre", $"%{nombre}%" }
                 };
 
-                string query = "SELECT Id, Nombre, Precio, Descripcion, ImagenUrl FROM Producto WHERE Nombre LIKE @Nombre";
+                string query = "SELECT Id, Nombre, Precio, Descripcion, ImagenUrl, DigitoVerificadorH FROM Producto WHERE Nombre LIKE @Nombre";
 
                 DataTable table = Acceso.ExecuteDataTable(query, hashtable);
 
@@ -155,6 +155,7 @@ namespace MPP
                 producto.Precio = Convert.ToDecimal(row["Precio"].ToString());
                 producto.Descripcion = row["Descripcion"].ToString();
                 producto.ImagenUrl = row["ImagenUrl"].ToString();
+                producto.DigitoVerificadorH = row["DigitoVerificadorH"].ToString();
                 return producto;
             }
             catch (Exception ex) { throw ex; }
@@ -178,5 +179,23 @@ namespace MPP
             }
         }
 
+        public static int ObtenerUltimoId()
+        {
+            try
+            {
+                string query = "SELECT TOP 1 Id FROM Producto ORDER BY Id DESC";
+
+                object result = Acceso.ExecuteScalar(query, null);
+
+                if (result != null && int.TryParse(result.ToString(), out int ultimoId))
+                    return ultimoId;
+
+                throw new Exception("No se encontró ningún registro en la tabla Producto.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener el último Id de Producto: {ex.Message}");
+            }
+        }
     }
 }
