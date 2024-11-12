@@ -14,6 +14,7 @@ namespace Servicios
 
         private IUsuario _usuario { get; set; }
 
+        public Traductor traductor { get; set; }
         private SesionManager() { }
 
         public static void Login(BEUsuario usuario)
@@ -24,6 +25,7 @@ namespace Servicios
                 {
                     _session = new SesionManager();
                     _session._usuario = usuario;
+                    _session.traductor = new Traductor();
                 }
                 else
                     throw new Exception("Sesion ya iniciada");

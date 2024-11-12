@@ -7,6 +7,8 @@ import { Bitacora } from './pages/Bitacora';
 import { Navbar } from './components/Navbar';
 import { Productos } from './pages/Productos';
 import { Carrito } from './pages/Carrito';
+import { fetchTranslations } from './hooks/useTranslations';
+
 
 const App = () => {
     const [cart, setCart] = useState([]);
@@ -18,6 +20,8 @@ const App = () => {
         setCart((prevCart) => prevCart.filter(product => product.id !== productToRemove.id));
     };
 
+    fetchTranslations(1);
+  
     return (
         <div className="container mt-5">
             <Navbar />

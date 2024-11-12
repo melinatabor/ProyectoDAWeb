@@ -8,16 +8,16 @@ import productImage2 from '../assets/masitasa.jpg';
 import productImage3 from '../assets/empanadirtas.jpg';
 import productImage4 from '../assets/pascualiana.jpg';
 import aboutImage from '../assets/empa.jpg';
+import { useTranslations } from '../hooks/useTranslations';
 
 const Home = () => {
-    //const { username } = useContext(UserContext);
-
+    const { gettext } = useTranslations();
     return (
         <div className="home">
             <section className="hero" id="home">
                 <img src={heroImage} alt="Distribuidora del Haras" className="hero-image" />
                 <div className="hero-text">
-                    <h1>Bienvenido a Distribuidora del Haras</h1>
+                    <h1>{gettext('headerHome')}</h1>
                     <p>Tu mejor opción en productos alimenticios.</p>
                 </div>
             </section>

@@ -50,6 +50,7 @@
     <Compile Include="TestAPIWebService.asmx.cs">
       <DependentUpon>TestAPIWebService.asmx</DependentUpon>
     </Compile>
+    <Compile Include="Traductor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Abstraccion\Abstraccion.csproj">

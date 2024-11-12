@@ -4,11 +4,17 @@ import logo from '../assets/logo.jpg';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSession } from '../hooks/useSession';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { useTranslations, fetchTranslations } from '../hooks/useTranslations';
+import { useState, useEffect } from 'react';
+
 
 export const Navbar = () => {
     const navigate = useNavigate();
     const { user, clear } = useSession();
-
+    const [languages, setLanguages] = useState(null);
+    const { fetchLanguage, clearLanguage, setLanguage } = useTranslations();
     const handleLogout = async () => {
         try {
             const response = await fetch("/api/login/logout", {
@@ -59,6 +65,17 @@ export const Navbar = () => {
             console.log("Error al descargar el archivo:", error);
         }
     };
+    const handleClick = (id) => {
+        clearLanguage();
+        setLanguage(id);
+    };
+
+    useEffect(() => {
+        const getIdiomas = async () => {
+            setTimeout(async () => { setLanguages(await fetchLanguage()) }, 3000);
+        };
+        getIdiomas();
+    }, []);
 
     return (
         <nav className="navbar">
@@ -71,6 +88,18 @@ export const Navbar = () => {
                     <li><Link to="/productos">Productos</Link></li>
                     <li><Link to="/#about">Nosotros</Link></li>
                     <li><Link to="/#contact">Contacto</Link></li>
+                    <li className="nav-item dropdown">
+                        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Seleccionar opción
+                        </button>
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {languages &&
+                                languages.map((idioma) => (
+                                    <li><button className="dropdown-item" href="#" onClick={() => handleClick(idioma.id)}>{idioma.idioma}</button></li>
+                                ))
+                            }
+                        </ul>
+                    </li>
                     {
                         user && user.rol === 1 && <li><Link to="/bitacora">Bitacora</Link></li>
                     }

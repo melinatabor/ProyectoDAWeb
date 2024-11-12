@@ -48,9 +48,12 @@
     <Compile Include="BEBitacoraFiltrada.cs" />
     <Compile Include="BEDigitoVerificador.cs" />
     <Compile Include="BEFamilia.cs" />
+    <Compile Include="BEIdioma.cs" />
+    <Compile Include="BEPalabra.cs" />
     <Compile Include="BEPermiso.cs" />
     <Compile Include="BEPermisoSimple.cs" />
     <Compile Include="BEProducto.cs" />
+    <Compile Include="BETraduccion.cs" />
     <Compile Include="BEUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
