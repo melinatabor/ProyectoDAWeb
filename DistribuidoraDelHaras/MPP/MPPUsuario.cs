@@ -252,5 +252,40 @@ namespace MPP
                 throw ex;
             }
         }
+
+        public static bool AsignarPermiso(BEUsuario usuario, BEPermiso permiso)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@IdUsuario", usuario.Id);
+                parametros.Add("@IdPermiso", permiso.Id);
+
+                return Acceso.ExecuteNonQuery(UsuarioStoredProcedures.SP_AsignarPermiso, parametros, true);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static bool EliminarPermisos(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Id", usuario.Id);
+
+                string query = "DELETE FROM UsuarioPermiso WHERE Usuario = @Id";
+
+                bool eliminado = Acceso.ExecuteNonQuery(query, parametros);
+
+                return eliminado;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

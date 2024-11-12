@@ -25,7 +25,35 @@ namespace DistribuidoraDelHaras.React.Controllers
 
             return Ok(new { permisos = permisos });
         }
+
+        [HttpPost("asignar-permiso/{usuarioId}/{permisoId}")]
+        public IActionResult AsignarPermiso(int usuarioId, int permisoId)
+        {
+            BEUsuario usuario = new BEUsuario() { Id = usuarioId };
+            BEPermiso permiso = BLLPermiso.BuscarPermiso(permisoId);
+
+            if (permiso is not BEPermiso)
+                return StatusCode(StatusCodes.Status404NotFound, new { message = $"Permiso con ID: {permisoId} no encontrado." });
+
+            bool asignado = BLLUsuario.AsignarPermiso(usuario, permiso);
+            
+            if (asignado)
+                return Ok(new { message = $"Permiso {permiso.Nombre} asignado correctamente." });
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Error al asignar permiso {permiso.Nombre}." });
+        }
+
+        [HttpPost("eliminar-permisos/{usuarioId}")]
+        public IActionResult EliminarPermisos(int usuarioId)
+        {
+            BEUsuario usuario = new BEUsuario() { Id = usuarioId };
+
+            bool eliminado = BLLUsuario.EliminarPermisos(usuario);
+
+            if (eliminado)
+                return Ok(new { message = $"Permisos del usuario con ID: {usuarioId} eliminados correctamente." });
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Error al eliminar los permisos del usuario con ID: {usuarioId}." });
+        }
     }
-
-
 }

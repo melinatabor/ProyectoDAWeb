@@ -240,5 +240,23 @@ namespace BLL
             }
             catch (Exception ex) { throw ex; }
         }
+
+        public static bool AsignarPermiso(BEUsuario usuario, BEPermiso permiso)
+        {
+            try
+            {
+                return MPPUsuario.AsignarPermiso(usuario, permiso);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static bool EliminarPermisos(BEUsuario usuario)
+        {
+            try
+            {
+                return MPPUsuario.EliminarPermisos(usuario);
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }
