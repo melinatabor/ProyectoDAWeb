@@ -49,6 +49,8 @@ namespace BLL
                 if (!string.IsNullOrEmpty(mensajeModificaciones))
                     throw new Exception($"Se detectaron modificaciones en la base de datos. {mensajeModificaciones}. Por favor contacte al administrador.");
 
+                ObtenerPermisosUsuario(usuarioExistente);
+
                 SesionManager.Login(usuarioExistente);
 
                 BEBitacora bitacora = new BEBitacora()
@@ -61,6 +63,24 @@ namespace BLL
                 BLLBitacora.Agregar(bitacora);
 
                 return usuarioExistente;
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        private static void ObtenerPermisosUsuario(BEUsuario usuario)
+        {
+            try
+            {
+                MPPUsuario.ObtenerPermisosUsuario(usuario);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static List<BEPermiso> ObtenerPermisosUsuario(int usuarioId)
+        {
+            try
+            {
+                return MPPUsuario.ObtenerPermisosUsuario(usuarioId);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -168,6 +188,20 @@ namespace BLL
                     return false;
             }
 
+            if (registroActual is BEBitacora)
+            {
+                if (valoresAntes[0] != ((BEBitacora)registroActual).Usuario.ToString())
+                    return false;
+
+                if (valoresAntes[1] != ((BEBitacora)registroActual).Fecha.ToString())
+                    return false;
+
+                if (valoresAntes[2] != ((BEBitacora)registroActual).Mensaje.ToString())
+                    return false;
+
+                return false;
+            }
+
             return true;
         }
 
@@ -197,5 +231,14 @@ namespace BLL
             return string.Join(", ", cambios);
         }
 
+        public static bool VerificarPermiso(int permiso)
+        {
+            try
+            {
+                List<int> permisosUsuario = SesionManager.GetUsuario().ListaPermisos;
+                return permisosUsuario.Contains(permiso);
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

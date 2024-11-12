@@ -36,6 +36,33 @@ namespace BLL
             }
         }
 
+        public static void InsertarBitacoraIniciales()
+        {
+            try
+            {
+                var bitacora = MPPBitacora.ListarParaRecalcular();
+
+                foreach (var b in bitacora)
+                {
+                    var auditoria = new BEAuditoriaCambios
+                    {
+                        Entidad = BEAuditoriaCambios.ENTIDAD_BITACORA,
+                        IdRegistroAfectado = b.Id,
+                        Operacion = BEAuditoriaCambios.OPERACION_ALTA,
+                        Fecha = DateTime.Now,
+                        DatosAntes = null,
+                        DatosDespues = CSVHelper.ConvertirBitacoraFormatoCSV(b)
+                    };
+
+                    Agregar(auditoria);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public static void InsertarProductosIniciales()
         {
             try

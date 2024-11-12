@@ -24,6 +24,7 @@ namespace DistribuidoraDelHaras.React.Controllers
 
                 BLLAuditoriaCambios.Eliminar();
                 BLLAuditoriaCambios.InsertarProductosIniciales();
+                BLLAuditoriaCambios.InsertarBitacoraIniciales();
 
                 return Ok(new { message = "DVH y DVV recalculados y actualizados exitosamente." });
             }
