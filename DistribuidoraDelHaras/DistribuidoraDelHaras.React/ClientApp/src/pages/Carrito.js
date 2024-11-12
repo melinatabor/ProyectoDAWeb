@@ -1,13 +1,13 @@
 ﻿import React from 'react';
 import { Card, CardContent, CardMedia, Typography, CardActions, Button, Grid, Container } from '@mui/material';
-import { useLogin } from '../hooks/useLogin';
+import { useSession } from '../hooks/useSession';
 import { useNavigate } from 'react-router-dom';
 
 export const Carrito = ({ cart, removeFromCart }) => {
-    const { isAuthenticated } = useLogin();
+    const { user } = useSession();
     const navigate = useNavigate();
 
-    if (!isAuthenticated) navigate('/login');
+    if (!user) navigate('/login');
     if (!cart || cart.length === 0) {
         return (
             <Container className="cart">

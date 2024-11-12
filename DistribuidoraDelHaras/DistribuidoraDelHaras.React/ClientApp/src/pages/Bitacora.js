@@ -1,12 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useLogin } from '../hooks/useLogin';
+import { useSession } from '../hooks/useSession';
+
 import { useNavigate } from 'react-router-dom';
 
 import '../styles/bitacora.css';
 
 export const Bitacora = () => {
     const [logs, setLogs] = useState([]);
-    const { isAuthenticated } = useLogin();
+    const { user } = useSession();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,7 +39,7 @@ export const Bitacora = () => {
         navigate('/login');
     };
 
-    if (!isAuthenticated) {
+    if (!user) {
         return (
             <div className="bitacora-container">
                 <h1>Error</h1>

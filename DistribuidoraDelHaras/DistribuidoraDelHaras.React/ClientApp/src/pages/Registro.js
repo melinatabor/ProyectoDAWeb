@@ -42,7 +42,6 @@ export const Registro = () => {
                 const errorData = await response.json();
                 let msg = errorData.message;
                 alert(msg);
-                console.log(msg);
             }
         } catch (error) {
             console.log("Error during login:", error);
