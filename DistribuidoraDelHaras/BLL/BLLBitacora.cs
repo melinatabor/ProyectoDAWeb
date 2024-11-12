@@ -67,6 +67,18 @@ namespace BLL
             }
         }
 
+        public static List<BEBitacora> ListarParaVerificarCambios()
+        {
+            try
+            {
+                return MPPBitacora.ListarParaVerificarCambios();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public static void RecalcularDVH()
         {
             List<BEBitacora> bitacoras = ListarTodo();

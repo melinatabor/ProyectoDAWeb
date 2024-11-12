@@ -172,5 +172,67 @@ namespace MPP
                 throw new Exception($"Error al obtener el último Id de Bitacora: {ex.Message}");
             }
         }
+
+        public static List<BEBitacora> ListarParaRecalcular()
+        {
+            try
+            {
+                List<BEBitacora> lista = new List<BEBitacora>();
+
+                string query = "SELECT Id, Usuario, Mensaje, Fecha FROM Bitacora";
+
+                DataTable table = Acceso.ExecuteDataTable(query, null);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEBitacora bitacora = new BEBitacora();
+                        bitacora.Id = Convert.ToInt32(fila["Id"]);
+                        bitacora.Usuario = Convert.ToInt32(fila["Usuario"]);
+                        bitacora.Mensaje = fila["Mensaje"].ToString();
+                        bitacora.Fecha = Convert.ToDateTime(fila["Fecha"]);
+                        lista.Add(bitacora);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static List<BEBitacora> ListarParaVerificarCambios()
+        {
+            try
+            {
+                List<BEBitacora> lista = new List<BEBitacora>();
+
+                string query = "SELECT Id, Usuario, Mensaje, Fecha FROM Bitacora";
+
+                DataTable table = Acceso.ExecuteDataTable(query, null);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEBitacora bitacora = new BEBitacora();
+                        bitacora.Id = Convert.ToInt32(fila["Id"]);
+                        bitacora.Usuario = Convert.ToInt32(fila["Usuario"]);
+                        bitacora.Mensaje = fila["Mensaje"].ToString();
+                        bitacora.Fecha = Convert.ToDateTime(fila["Fecha"]);
+                        lista.Add(bitacora);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

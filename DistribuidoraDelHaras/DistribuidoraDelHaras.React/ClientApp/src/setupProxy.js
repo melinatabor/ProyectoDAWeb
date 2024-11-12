@@ -11,8 +11,13 @@ const context = [
     "/api/session",
     "/api/products",
     "/api/test",
+<<<<<<< HEAD
     "/api/language",
     "/api/recalculardv",
+=======
+    "/api/recalculardv",
+    "/api/permiso"
+>>>>>>> 90b561b152c53650478b08319d5a8450f69c8f7f
 ];
 
 module.exports = function(app) {

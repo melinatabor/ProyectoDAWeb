@@ -47,7 +47,9 @@ namespace BLL
 
                 string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
                 if (!string.IsNullOrEmpty(mensajeModificaciones))
-                    throw new Exception($"Se detectaron modificaciones en la base de datos. {mensajeModificaciones}. Por favor contacte al administrador.");
+                    throw new Exception($"{mensajeModificaciones}");
+
+                ObtenerPermisosUsuario(usuarioExistente);
 
                 SesionManager.Login(usuarioExistente);
 
@@ -61,6 +63,24 @@ namespace BLL
                 BLLBitacora.Agregar(bitacora);
 
                 return usuarioExistente;
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        private static void ObtenerPermisosUsuario(BEUsuario usuario)
+        {
+            try
+            {
+                MPPUsuario.ObtenerPermisosUsuario(usuario);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static List<BEPermiso> ObtenerPermisosUsuario(int usuarioId)
+        {
+            try
+            {
+                return MPPUsuario.ObtenerPermisosUsuario(usuarioId);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -91,21 +111,21 @@ namespace BLL
             if (bitacoraModificada)
             {
                 List<BEAuditoriaCambios> registrosAuditoria = BLLAuditoriaCambios.ListarPorEntidad(BEAuditoriaCambios.ENTIDAD_BITACORA);
-                var registrosActuales = BLLBitacora.ListarTodo();
+                var registrosActuales = BLLBitacora.ListarParaVerificarCambios();
 
                 foreach (BEBitacora registro in registrosActuales)
                 {
                     var auditoria = registrosAuditoria.FirstOrDefault(a => a.IdRegistroAfectado == registro.Id);
                     if (auditoria != null && !CompararDatosCSV(auditoria.DatosAntes, auditoria.DatosDespues, registro, auditoria.Operacion))
                     {
-                        mensajesDeCambio.Add($"Registro modificado en Bitacora (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
+                        mensajesDeCambio.Add($"\nRegistro modificado en Bitacora (ID: {registro.Id})");
                     }
                 }
 
                 foreach (var auditoria in registrosAuditoria)
                 {
                     if (!registrosActuales.Any(r => r.Id == auditoria.IdRegistroAfectado))
-                        mensajesDeCambio.Add($"Registro eliminado externamente en Bitacora (ID: {auditoria.IdRegistroAfectado})");
+                        mensajesDeCambio.Add($"\nRegistro eliminado en Bitacora (ID: {auditoria.IdRegistroAfectado})");
                 }
             }
 
@@ -119,18 +139,18 @@ namespace BLL
                     var auditoria = registrosAuditoria.FirstOrDefault(a => a.IdRegistroAfectado == registro.Id);
                     if (auditoria != null && !CompararDatosCSV(auditoria.DatosAntes, auditoria.DatosDespues, registro, auditoria.Operacion))
                     {
-                        mensajesDeCambio.Add($"Registro modificado en Producto (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
+                        mensajesDeCambio.Add($"\nRegistro modificado en Producto (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
                     }
                 }
 
                 foreach (var auditoria in registrosAuditoria)
                 {
                     if (!registrosActuales.Any(r => r.Id == auditoria.IdRegistroAfectado))
-                        mensajesDeCambio.Add($"Registro eliminado externamente en Producto (ID: {auditoria.IdRegistroAfectado})");
+                        mensajesDeCambio.Add($"\nRegistro eliminado en Producto (ID: {auditoria.IdRegistroAfectado})");
                 }
             }
 
-            return mensajesDeCambio.Count > 0 ? $"Se detectaron modificaciones en la base de datos. {string.Join(" ", mensajesDeCambio)}. Por favor contacte al administrador." : string.Empty;
+            return mensajesDeCambio.Count > 0 ? $"Se detectaron modificaciones en la base de datos. {string.Join(" ", mensajesDeCambio)}.\nPor favor contacte al administrador." : string.Empty;
         }
 
         private static bool CompararDatosCSV(string datosAntesCSV, string datosDespuesCSV, object registroActual, string operacion)
@@ -168,6 +188,20 @@ namespace BLL
                     return false;
             }
 
+            if (registroActual is BEBitacora)
+            {
+                if (valoresAntes[0] != ((BEBitacora)registroActual).Usuario.ToString())
+                    return false;
+
+                if (valoresAntes[1] != ((BEBitacora)registroActual).Fecha.ToString())
+                    return false;
+
+                if (valoresAntes[2] != ((BEBitacora)registroActual).Mensaje.ToString())
+                    return false;
+
+                return false;
+            }
+
             return true;
         }
 
@@ -197,5 +231,32 @@ namespace BLL
             return string.Join(", ", cambios);
         }
 
+        public static bool VerificarPermiso(int permiso)
+        {
+            try
+            {
+                List<int> permisosUsuario = SesionManager.GetUsuario().ListaPermisos;
+                return permisosUsuario.Contains(permiso);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static bool AsignarPermiso(BEUsuario usuario, BEPermiso permiso)
+        {
+            try
+            {
+                return MPPUsuario.AsignarPermiso(usuario, permiso);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static bool EliminarPermisos(BEUsuario usuario)
+        {
+            try
+            {
+                return MPPUsuario.EliminarPermisos(usuario);
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

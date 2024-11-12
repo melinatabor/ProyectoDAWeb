@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using DAL;
 using System.Collections;
+using MPP.StoredProcedures;
+using Abstraccion;
 
 namespace MPP
 {
@@ -161,10 +163,128 @@ namespace MPP
 
                 Acceso.ExecuteNonQuery(query, parametros);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
+            }
+        }
+
+        public static List<BEPermiso> ObtenerPermisosUsuario(int usuarioId)
+        {
+            try
+            {
+                List<BEPermiso> lista = new List<BEPermiso>();
+
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@IdUsuario", usuarioId);
+
+                DataTable table = Acceso.ExecuteDataTable(PermisoStoredProcedures.SP_ObtenerPermisosUsuario, parametros, true);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        int id = Convert.ToInt32(fila["Id"]);
+
+                        BEPermiso permiso = MPPPermiso.BuscarPermiso(id);
+
+                        List<BEPermiso> hijos = MPPPermiso.ListarHijosRecursivo(permiso);
+
+                        if (hijos.Count > 0)
+                        {
+                            lista.AddRange(hijos);
+                            lista.Add(permiso);
+                        }
+                        else
+                            lista.Add(permiso);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void ObtenerPermisosUsuario(BEUsuario usuario)
+        {
+            try
+            {
+                List<BEPermiso> lista = new List<BEPermiso>();
+
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@IdUsuario", usuario.Id);
+
+                DataTable table = Acceso.ExecuteDataTable(PermisoStoredProcedures.SP_ObtenerPermisosUsuario, parametros, true);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        int id = Convert.ToInt32(fila["Id"]);
+
+                        BEPermiso permiso = MPPPermiso.BuscarPermiso(id);
+
+                        List<BEPermiso> hijos = MPPPermiso.ListarHijosRecursivo(permiso);
+
+                        if (hijos.Count > 0)
+                        {
+                            lista.AddRange(hijos);
+                            lista.Add(permiso);
+                        }
+                        else
+                            lista.Add(permiso);
+                    }
+                }
+
+                foreach (BEPermiso permiso in lista)
+                {
+                    usuario.ListaPermisos.Add(permiso.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static bool AsignarPermiso(BEUsuario usuario, BEPermiso permiso)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@IdUsuario", usuario.Id);
+                parametros.Add("@IdPermiso", permiso.Id);
+
+                return Acceso.ExecuteNonQuery(UsuarioStoredProcedures.SP_AsignarPermiso, parametros, true);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static bool EliminarPermisos(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Id", usuario.Id);
+
+                string query = "DELETE FROM UsuarioPermiso WHERE Usuario = @Id";
+
+                bool eliminado = Acceso.ExecuteNonQuery(query, parametros);
+
+                return eliminado;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }
