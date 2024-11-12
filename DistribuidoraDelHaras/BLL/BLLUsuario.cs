@@ -47,7 +47,7 @@ namespace BLL
 
                 string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
                 if (!string.IsNullOrEmpty(mensajeModificaciones))
-                    throw new Exception($"Se detectaron modificaciones en la base de datos. {mensajeModificaciones}. Por favor contacte al administrador.");
+                    throw new Exception($"{mensajeModificaciones}");
 
                 ObtenerPermisosUsuario(usuarioExistente);
 
@@ -111,21 +111,21 @@ namespace BLL
             if (bitacoraModificada)
             {
                 List<BEAuditoriaCambios> registrosAuditoria = BLLAuditoriaCambios.ListarPorEntidad(BEAuditoriaCambios.ENTIDAD_BITACORA);
-                var registrosActuales = BLLBitacora.ListarTodo();
+                var registrosActuales = BLLBitacora.ListarParaVerificarCambios();
 
                 foreach (BEBitacora registro in registrosActuales)
                 {
                     var auditoria = registrosAuditoria.FirstOrDefault(a => a.IdRegistroAfectado == registro.Id);
                     if (auditoria != null && !CompararDatosCSV(auditoria.DatosAntes, auditoria.DatosDespues, registro, auditoria.Operacion))
                     {
-                        mensajesDeCambio.Add($"Registro modificado en Bitacora (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
+                        mensajesDeCambio.Add($"\nRegistro modificado en Bitacora (ID: {registro.Id})");
                     }
                 }
 
                 foreach (var auditoria in registrosAuditoria)
                 {
                     if (!registrosActuales.Any(r => r.Id == auditoria.IdRegistroAfectado))
-                        mensajesDeCambio.Add($"Registro eliminado externamente en Bitacora (ID: {auditoria.IdRegistroAfectado})");
+                        mensajesDeCambio.Add($"\nRegistro eliminado en Bitacora (ID: {auditoria.IdRegistroAfectado})");
                 }
             }
 
@@ -139,18 +139,18 @@ namespace BLL
                     var auditoria = registrosAuditoria.FirstOrDefault(a => a.IdRegistroAfectado == registro.Id);
                     if (auditoria != null && !CompararDatosCSV(auditoria.DatosAntes, auditoria.DatosDespues, registro, auditoria.Operacion))
                     {
-                        mensajesDeCambio.Add($"Registro modificado en Producto (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
+                        mensajesDeCambio.Add($"\nRegistro modificado en Producto (ID: {registro.Id}): {ObtenerCamposModificadosCSV(auditoria.DatosAntes, registro)}");
                     }
                 }
 
                 foreach (var auditoria in registrosAuditoria)
                 {
                     if (!registrosActuales.Any(r => r.Id == auditoria.IdRegistroAfectado))
-                        mensajesDeCambio.Add($"Registro eliminado externamente en Producto (ID: {auditoria.IdRegistroAfectado})");
+                        mensajesDeCambio.Add($"\nRegistro eliminado en Producto (ID: {auditoria.IdRegistroAfectado})");
                 }
             }
 
-            return mensajesDeCambio.Count > 0 ? $"Se detectaron modificaciones en la base de datos. {string.Join(" ", mensajesDeCambio)}. Por favor contacte al administrador." : string.Empty;
+            return mensajesDeCambio.Count > 0 ? $"Se detectaron modificaciones en la base de datos. {string.Join(" ", mensajesDeCambio)}.\nPor favor contacte al administrador." : string.Empty;
         }
 
         private static bool CompararDatosCSV(string datosAntesCSV, string datosDespuesCSV, object registroActual, string operacion)
