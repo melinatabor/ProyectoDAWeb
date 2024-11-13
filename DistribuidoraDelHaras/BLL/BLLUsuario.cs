@@ -45,9 +45,12 @@ namespace BLL
                 BEUsuario usuarioExistente = BuscarUsuario(usuario)
                     ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
 
-                string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
-                if (!string.IsNullOrEmpty(mensajeModificaciones))
-                    throw new Exception($"{mensajeModificaciones}");
+                if (!UsuarioEsMaster(usuarioExistente))
+                {
+                    string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
+                    if (!string.IsNullOrEmpty(mensajeModificaciones))
+                        throw new Exception($"{mensajeModificaciones}");
+                }
 
                 ObtenerPermisosUsuario(usuarioExistente);
 
@@ -65,6 +68,18 @@ namespace BLL
                 return usuarioExistente;
             }
             catch (Exception ex) { throw ex; }
+        }
+
+        private static bool UsuarioEsMaster(BEUsuario usuario)
+        {
+            try
+            {
+                return MPPUsuario.UsuarioEsMaster(usuario);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private static void ObtenerPermisosUsuario(BEUsuario usuario)

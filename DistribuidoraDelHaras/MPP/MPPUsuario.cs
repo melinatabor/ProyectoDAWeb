@@ -287,5 +287,26 @@ namespace MPP
                 throw ex;
             }
         }
+
+        public static bool UsuarioEsMaster(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@UsuarioId", usuario.Id);  
+                parametros.Add("@PermisoMaster", 8);
+
+                string query = $"SELECT * FROM UsuarioPermiso WHERE Usuario = @UsuarioId AND Permiso = @PermisoMaster";
+
+                DataTable table = Acceso.ExecuteDataTable(query, parametros);
+
+                return table.Rows.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
