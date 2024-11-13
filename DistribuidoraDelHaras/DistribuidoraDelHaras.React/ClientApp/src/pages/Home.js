@@ -18,13 +18,13 @@ const Home = () => {
                 <img src={heroImage} alt="Distribuidora del Haras" className="hero-image" />
                 <div className="hero-text">
                     <h1>{gettext('headerHome')}</h1>
-                    <p>Tu mejor opción en productos alimenticios.</p>
+                    <p>{gettext('sloganHome')}</p>
                 </div>
             </section>
 
             <Container>
                 <section className="products" id="products">
-                    <h2>Algunos de nuestros productos...</h2>
+                    <h2>{gettext('descriptionHome')}</h2>
                     <Grid container spacing={4}>
                         <Grid item xs={12} md={6}>
                             <Paper className="product-item">
@@ -49,17 +49,17 @@ const Home = () => {
                 </section>
 
                 <section className="about" id="about" >
-                    <h2>Sobre Nosotros</h2>
+                    <h2>{gettext('aboutHome')}</h2>
                     <div className="about-content">
                         <img src={aboutImage} alt="Sobre Nosotros" className="about-image" />
                         <div className="about-text">
-                            <p>Distribuidora del Haras es una empresa dedicada a ofrecer los mejores productos alimenticios a nuestros clientes. Nuestra misión es garantizar la calidad y satisfacción en cada entrega.</p>
+                            <p>{gettext('aboutTextHome')}</p>
                         </div>
                     </div>
                 </section>
 
                 <section className="contact" id="contact">
-                    <h2>Contacto</h2>
+                    <h2>{gettext('contactHome')}</h2>
                     <p>Para más información, contáctanos en:</p>
                     <p>Email: info@distribuidoradelharas.com</p>
                     <p>Teléfono: (123) 456-7890</p>

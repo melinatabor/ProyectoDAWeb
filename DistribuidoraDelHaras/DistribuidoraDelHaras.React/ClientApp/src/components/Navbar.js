@@ -6,15 +6,17 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSession } from '../hooks/useSession';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { useTranslations, fetchTranslations } from '../hooks/useTranslations';
+import { useTranslations } from '../hooks/useTranslations';
 import { useState, useEffect } from 'react';
-
+import { usePermissions } from '../hooks/usePermissions';
 
 export const Navbar = () => {
     const navigate = useNavigate();
     const { user, clear } = useSession();
     const [languages, setLanguages] = useState(null);
     const { fetchLanguage, clearLanguage, setLanguage } = useTranslations();
+    const { permissions, fetchPermissions } = usePermissions(user?.id);
+
     const handleLogout = async () => {
         try {
             const response = await fetch("/api/login/logout", {
@@ -27,6 +29,7 @@ export const Navbar = () => {
             if (response.ok) {
                 clear();
                 navigate("/login");
+                window.location.reload();
             } else {
                 const errorData = await response.json();
                 let msg = errorData.message;
@@ -72,10 +75,17 @@ export const Navbar = () => {
 
     useEffect(() => {
         const getIdiomas = async () => {
-            setTimeout(async () => { setLanguages(await fetchLanguage()) }, 3000);
+            setTimeout(async () => { setLanguages(await fetchLanguage()) }, 1000);
         };
         getIdiomas();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            fetchPermissions();
+        }
+
+    }, [user]);
 
     return (
         <nav className="navbar">
@@ -101,14 +111,18 @@ export const Navbar = () => {
                         </ul>
                     </li>
                     {
-                        user && user.rol === 1 && <li><Link to="/bitacora">Bitacora</Link></li>
+                        user && permissions && permissions.map((permiso) => {
+                            console.log(permiso);
+                            if (permiso.nombre === 'Admin') {
+                                return <>
+                                    < li > <Link to="/bitacora">Bitacora</Link></li>
+                                    < li > <Link to="/permisos">Permisos</Link></li>
+                                </>
+                            }
+                            if (permiso.nombre === 'Master') return <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
+                            if (permiso.nombre === 'Cliente') return <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>
+                        })
                     }
-                    {
-                        user && user.rol === 2 && <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
-                    }
-                    {user && user.rol === 3 && (
-                        <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>
-                    )}
                 </ul>
                 <div className="navbar-user">
                     {user ? (

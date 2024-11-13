@@ -19,6 +19,7 @@ namespace DistribuidoraDelHaras.React.Controllers
                 BEUsuario user = BLLUsuario.Login(model);
                 return Ok(new
                 {
+                    id = user.Id,
                     nombre = user.Nombre,
                     apellido = user.Apellido,
                     email = user.Email,
@@ -104,6 +105,22 @@ namespace DistribuidoraDelHaras.React.Controllers
                 {
                     filas = bitacora
                 });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("usuarios")]
+        public IActionResult Usuarios()
+        {
+            try
+            {
+                List<BEUsuario> users = BLLUsuario.Listar();
+                return Ok(new { usuarios = users });
             }
             catch (Exception ex)
             {

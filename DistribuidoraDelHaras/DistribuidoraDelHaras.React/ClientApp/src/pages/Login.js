@@ -25,6 +25,7 @@ const Login = () => {
                 const data = await response.json();
                 set(data); 
                 navigate("/");
+                window.location.reload();
             } else {
                 const errorData = await response.json();
                 let msg = errorData.message;

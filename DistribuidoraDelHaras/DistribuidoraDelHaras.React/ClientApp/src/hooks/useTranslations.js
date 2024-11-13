@@ -9,8 +9,6 @@
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data, 'RESPONSE');
-
             return data.traduccion;
         } else {
             console.log(response);
@@ -49,8 +47,12 @@ export const useTranslations = () => {
 
     const setLanguage = async (id) => {
         const traducciones = await fetchTranslations(id);
-        sessionStorage.setItem("traducciones", JSON.stringify(traducciones));
-        window.location.reload();
+        const idioma = getLanguage()?.idioma;
+
+        if (idioma !== id) {
+            sessionStorage.setItem("traducciones", JSON.stringify({ traducciones: traducciones, idioma: id }));
+            window.location.reload();
+         }
     };
 
     const getLanguage = () => {
@@ -63,11 +65,7 @@ export const useTranslations = () => {
     };
 
     const gettext = (tag) => {
-        let palabra;
-        setTimeout(() => {
-            palabra = getLanguage()?.find((traduccion) => traduccion.tag === tag)?.traduccion ?? 'Sin tradu pa';
-        }, 500);
-        return palabra;
+        return getLanguage()?.traducciones.find((traduccion) => traduccion.tag === tag)?.traduccion ?? 'Sin tradu pa';
     }
 
     return { fetchLanguage, setLanguage, getLanguage, clearLanguage, gettext };

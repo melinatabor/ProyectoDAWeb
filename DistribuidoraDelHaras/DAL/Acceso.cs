@@ -7,7 +7,7 @@ namespace DAL
 {
     public class Acceso
     {
-        private static SqlConnection _connection = new SqlConnection("Data Source=DESKTOP-BEA1EQV\\SQLEXPRESS;Initial Catalog=DistHaras;Integrated Security=True;TrustServerCertificate=True;");
+        private static SqlConnection _connection = new SqlConnection("Data Source=DESKTOP-BEA1EQV\\SQLEXPRESS;Initial Catalog=DistHaras;Integrated Security=True;TrustServerCertificate=True;Pooling=True;Max Pool Size=100;Min Pool Size=5;MultipleActiveResultSets=True;");
         private static SqlCommand _command;
         private static SqlTransaction _transaction;
 
