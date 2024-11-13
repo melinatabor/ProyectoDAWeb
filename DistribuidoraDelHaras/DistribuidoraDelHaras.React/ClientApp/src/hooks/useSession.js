@@ -1,8 +1,10 @@
-﻿export const useSession = () => {
-    const user = (() => {
+﻿import { useMemo } from 'react';
+
+export const useSession = () => {
+    const user = useMemo(() => {
         const savedUser = sessionStorage.getItem('user');
         return savedUser ? JSON.parse(savedUser) : null;
-    })();
+    }, []);
 
     const set = (newUser) => {
         sessionStorage.setItem('user', JSON.stringify(newUser));
