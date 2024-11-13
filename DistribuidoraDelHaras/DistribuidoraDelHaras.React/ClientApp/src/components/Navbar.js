@@ -68,6 +68,29 @@ export const Navbar = () => {
             console.log("Error al descargar el archivo:", error);
         }
     };
+
+    const handleRestoreBD = async () => {
+        try {
+            const response = await fetch("/api/recalculardv", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                alert(data.message);
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message);
+            }
+        } catch (error) {
+            console.log("Error al restaurar la base de datos:", error);
+        }
+    }
+
     const handleClick = (id) => {
         clearLanguage();
         setLanguage(id);
@@ -98,9 +121,27 @@ export const Navbar = () => {
                     <li><Link to="/productos">Productos</Link></li>
                     <li><Link to="/#about">Nosotros</Link></li>
                     <li><Link to="/#contact">Contacto</Link></li>
+                    
+                    {
+                        user && permissions && permissions.map((permiso) => {
+                            if (permiso.nombre === 'Admin') {
+                                return <>
+                                    < li > <Link to="/bitacora">Bitacora</Link></li>
+                                    < li > <Link to="/permisos">Permisos</Link></li>
+                                </>
+                            }
+                            if (permiso.nombre === 'Master') {
+                                return <>
+                                    <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
+                                    <li><button onClick={handleRestoreBD}>Restaurar BD</button></li>
+                                </>
+                            }
+                            if (permiso.nombre === 'Cliente') return <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>
+                        })
+                    }
                     <li className="nav-item dropdown">
                         <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            Seleccionar opción
+                            Idioma
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {languages &&
@@ -110,19 +151,6 @@ export const Navbar = () => {
                             }
                         </ul>
                     </li>
-                    {
-                        user && permissions && permissions.map((permiso) => {
-                            console.log(permiso);
-                            if (permiso.nombre === 'Admin') {
-                                return <>
-                                    < li > <Link to="/bitacora">Bitacora</Link></li>
-                                    < li > <Link to="/permisos">Permisos</Link></li>
-                                </>
-                            }
-                            if (permiso.nombre === 'Master') return <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
-                            if (permiso.nombre === 'Cliente') return <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>
-                        })
-                    }
                 </ul>
                 <div className="navbar-user">
                     {user ? (

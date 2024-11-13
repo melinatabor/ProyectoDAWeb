@@ -7,7 +7,7 @@ namespace DistribuidoraDelHaras.React.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecalcularDvController : Controller
+    public class RecalculardvController : Controller
     {
         [HttpPost]
         public IActionResult RecalcularDigitosVerificadores()
