@@ -15,6 +15,7 @@ namespace MPP.StoredProcedures
         public const string SP_ListarFamilias = "SP_Listar_Familias";
         public const string SP_ListarHijosRecursivo = "SP_Listar_Hijos_Recursivo";
         public const string SP_ListarPermisos = "SP_Listar_Permisos";
+        public const string SP_ListarPermisosUsuarios = "SP_Listar_Permisos_Usuarios";
         public const string SP_ObtenerPermisosUsuario = "SP_Obtener_Permisos_Usuario";
     }
 }

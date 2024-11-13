@@ -29,7 +29,7 @@ export const useUsers = () => {
     useEffect(() => {
         setTimeout(() => {
             fetchUsuarios();
-        }, 5000);
+        }, 4000);
     }, []);
 
     return { users, fetchUsuarios };

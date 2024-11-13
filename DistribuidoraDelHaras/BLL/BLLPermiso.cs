@@ -92,6 +92,14 @@ namespace BLL
             }
             catch (Exception ex) { throw ex; }
         }
+        public static List<BEPermisoXUsuario> ListarTodosPermisos()
+        {
+            try
+            {
+                return MPPPermiso.ListarTodosPermisos();
+            }
+            catch (Exception ex) { throw ex; }
+        }
 
         public static List<BEPermiso> ObtenerPadres(BEPermiso familia)
         {

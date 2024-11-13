@@ -327,5 +327,35 @@ namespace MPP
 
             return padre;
         }
+
+        public static List<BEPermisoXUsuario> ListarTodosPermisos()
+        {
+            try
+            {
+                List<BEPermisoXUsuario> lista = new List<BEPermisoXUsuario>();
+
+                DataTable table = Acceso.ExecuteDataTable(PermisoStoredProcedures.SP_ListarPermisosUsuarios, null, true);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEPermisoXUsuario permiso = new BEPermisoXUsuario()
+                        {
+                            UsuarioId = Convert.ToInt32(fila["UsuarioId"].ToString()),
+                            PermisosPadre = fila["PermisosPadres"].ToString(),
+                            PermisosHijos = fila["PermisosHijos"].ToString()
+                        };
+                        lista.Add(permiso);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

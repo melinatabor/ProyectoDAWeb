@@ -26,6 +26,16 @@ namespace DistribuidoraDelHaras.React.Controllers
             return Ok(new { permisos = permisos });
         }
 
+        [HttpGet("permisos")]
+        public IActionResult ObtenerTodosPermisos(int usuarioId)
+        {
+            List<BEPermisoXUsuario> permissions = new List<BEPermisoXUsuario>();
+
+            permissions = BLLPermiso.ListarTodosPermisos();
+
+            return Ok(new { permisos = permissions });
+        }
+
         [HttpPost("asignar-permiso/{usuarioId}/{permisoId}")]
         public IActionResult AsignarPermiso(int usuarioId, int permisoId)
         {
