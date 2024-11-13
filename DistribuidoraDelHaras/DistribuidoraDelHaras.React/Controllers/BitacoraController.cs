@@ -10,23 +10,14 @@ namespace DistribuidoraDelHaras.React.Controllers
     [ApiController]
     public class BitacoraController : ControllerBase
     {
-        [HttpGet("bitacora")]
-        public IActionResult Bitacora()
+        [HttpPost("bitacora")]
+        public IActionResult Bitacora([FromBody] BEBitacoraCriteria criteria)
         {
             try
             {
-                DateTime desde = new DateTime(2024, 1, 1, 0, 0, 0);
-                DateTime hasta = new DateTime(2024, 12, 31, 23, 59, 59);
-
-                BEBitacoraCriteria criteria = new BEBitacoraCriteria()
-                {
-                    Desde = desde,
-                    Hasta = hasta,
-                    Tipo = 1,
-                    Usuario = null,
-                    Page = 1,
-                    RowPerPage = 5
-                };
+                criteria.Usuario = null;
+                criteria.Page = 1;
+                criteria.RowPerPage = 5;
 
                 List<BEBitacoraFiltrada> bitacora = BLLBitacora.Filtrar(criteria);
 
@@ -41,5 +32,6 @@ namespace DistribuidoraDelHaras.React.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
     }
 }

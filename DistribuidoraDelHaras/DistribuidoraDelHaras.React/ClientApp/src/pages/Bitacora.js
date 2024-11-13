@@ -7,6 +7,9 @@ import '../styles/bitacora.css';
 
 export const Bitacora = () => {
     const [logs, setLogs] = useState([]);
+    const [desde, setDesde] = useState('');
+    const [hasta, setHasta] = useState('');
+    const [tipo, setTipo] = useState(1);
     const { user } = useSession();
     const navigate = useNavigate();
 
@@ -17,10 +20,11 @@ export const Bitacora = () => {
     const fetchBitacoraData = async () => {
         try {
             const response = await fetch('/api/bitacora/bitacora', {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ desde, hasta, tipo })
             });
 
             if (response.ok) {
@@ -52,6 +56,29 @@ export const Bitacora = () => {
     return (
         <div className="bitacora-container">
             <h2>Bitácora</h2>
+            <div className="filtros-fecha">
+                <label>Desde: </label>
+                <input
+                    type="date"
+                    value={desde}
+                    onChange={(e) => setDesde(e.target.value)}
+                />
+                <label>Hasta: </label>
+                <input
+                    type="date"
+                    value={hasta}
+                    onChange={(e) => setHasta(e.target.value)}
+                />
+                <label>Tipo: </label>
+                <select
+                    value={tipo}
+                    onChange={(e) => setTipo(parseInt(e.target.value))}
+                >
+                    <option value={1}>INFO</option>
+                    <option value={2}>ERROR</option>
+                </select>
+                <button onClick={fetchBitacoraData}>Filtrar</button>
+            </div>
             <div className="logs">
                 <table>
                     <thead>

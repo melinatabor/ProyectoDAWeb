@@ -59,7 +59,7 @@ namespace MPP
 
                 Hashtable parametros = ExtraerParametros(criteria);
 
-                string query = $"SELECT b.id AS 'Id', u.username AS 'Usuario', b.Mensaje, b.Fecha FROM Bitacora AS b INNER JOIN Usuario u ON u.id = b.usuario WHERE (@Usuario IS NULL OR u.Username = @Usuario)";
+                string query = $"SELECT b.id AS 'Id', u.username AS 'Usuario', b.Mensaje, b.Fecha FROM Bitacora AS b INNER JOIN Usuario u ON u.id = b.usuario WHERE (@Usuario IS NULL OR u.Username = @Usuario) AND (b.Fecha >= @Desde AND b.Fecha <= @Hasta) AND (b.Tipo = @Tipo)";
 
                 DataTable table = Acceso.ExecuteDataTable(query, parametros);
 
