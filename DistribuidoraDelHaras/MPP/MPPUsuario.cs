@@ -297,11 +297,9 @@ namespace MPP
                 parametros.Add("@UsuarioId", usuario.Id);  
                 parametros.Add("@PermisoMaster", 8);
 
-                string query = $"SELECT * FROM UsuarioPermiso WHERE Usuario = @UsuarioId AND Permiso = @PermisoMaster";
+                string query = $"SELECT COUNT(*) FROM UsuarioPermiso WHERE Usuario = @UsuarioId AND Permiso = @PermisoMaster";
 
-                DataTable table = Acceso.ExecuteDataTable(query, parametros);
-
-                return table.Rows.Count > 0;
+                return Convert.ToBoolean(Acceso.ExecuteScalar(query, parametros));
             }
             catch (Exception ex)
             {

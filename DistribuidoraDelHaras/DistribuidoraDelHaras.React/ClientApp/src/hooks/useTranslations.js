@@ -65,7 +65,7 @@ export const useTranslations = () => {
     };
 
     const gettext = (tag) => {
-        return getLanguage()?.traducciones.find((traduccion) => traduccion.tag === tag)?.traduccion ?? 'Sin tradu pa';
+        return getLanguage()?.traducciones.find((traduccion) => traduccion.tag === tag)?.traduccion ?? 'Cargando traducciones...';
     }
 
     return { fetchLanguage, setLanguage, getLanguage, clearLanguage, gettext };

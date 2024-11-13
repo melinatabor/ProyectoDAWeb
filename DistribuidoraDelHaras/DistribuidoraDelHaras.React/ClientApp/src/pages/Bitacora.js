@@ -4,6 +4,7 @@ import { useSession } from '../hooks/useSession';
 import { useNavigate } from 'react-router-dom';
 
 import '../styles/bitacora.css';
+import { useTranslations } from '../hooks/useTranslations';
 
 export const Bitacora = () => {
     const [logs, setLogs] = useState([]);
@@ -12,7 +13,7 @@ export const Bitacora = () => {
     const [tipo, setTipo] = useState(1);
     const { user } = useSession();
     const navigate = useNavigate();
-
+    const { gettext } = useTranslations();
     useEffect(() => {
         fetchBitacoraData();
     }, []);
@@ -55,7 +56,7 @@ export const Bitacora = () => {
 
     return (
         <div className="bitacora-container">
-            <h2>Bitácora</h2>
+            <h2>{gettext('tagBitacora')}</h2>
             <div className="filtros-fecha">
                 <label>Desde: </label>
                 <input

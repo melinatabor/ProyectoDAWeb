@@ -60,9 +60,9 @@ const Home = () => {
 
                 <section className="contact" id="contact">
                     <h2>{gettext('contactHome')}</h2>
-                    <p>Para más información, contáctanos en:</p>
+                    <p>{gettext('infoAboutHome')}</p>
                     <p>Email: info@distribuidoradelharas.com</p>
-                    <p>Teléfono: (123) 456-7890</p>
+                    <p>{gettext('telAboutHome')}</p>
                 </section>
             </Container>
         </div>

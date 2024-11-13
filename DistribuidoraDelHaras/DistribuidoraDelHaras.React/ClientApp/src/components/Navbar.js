@@ -14,7 +14,7 @@ export const Navbar = () => {
     const navigate = useNavigate();
     const { user, clear } = useSession();
     const [languages, setLanguages] = useState(null);
-    const { fetchLanguage, clearLanguage, setLanguage } = useTranslations();
+    const { fetchLanguage, clearLanguage, setLanguage, gettext } = useTranslations();
     const { permissions, fetchPermissions } = usePermissions(user?.id);
 
     const handleLogout = async () => {
@@ -117,23 +117,23 @@ export const Navbar = () => {
                     <img src={logo} alt="Distribuidora del Haras" />
                 </Link>
                 <ul className="navbar-menu">
-                    <li><Link to="/#home">Inicio</Link></li>
-                    <li><Link to="/productos">Productos</Link></li>
-                    <li><Link to="/#about">Nosotros</Link></li>
-                    <li><Link to="/#contact">Contacto</Link></li>
+                    <li><Link to="/#home">{gettext('tagInicio')}</Link></li>
+                    <li><Link to="/productos">{gettext('tagProductos')}</Link></li>
+                    <li><Link to="/#about">{gettext('tagNosotros')}</Link></li>
+                    <li><Link to="/#contact">{gettext('tagContacto')}</Link></li>
                     
                     {
                         user && permissions && permissions.map((permiso) => {
                             if (permiso.nombre === 'Admin') {
                                 return <>
-                                    < li > <Link to="/bitacora">Bitacora</Link></li>
-                                    < li > <Link to="/permisos">Permisos</Link></li>
+                                    < li > <Link to="/bitacora">{gettext('tagBitacora')}</Link></li>
+                                    < li > <Link to="/permisos">{gettext('tagPermiso')}</Link></li>
                                 </>
                             }
                             if (permiso.nombre === 'Master') {
                                 return <>
-                                    <li><button onClick={handleDownloadBackup}>Backup BD</button></li>
-                                    <li><button onClick={handleRestoreBD}>Restaurar BD</button></li>
+                                    <li><button className="btn btn-primary" onClick={handleDownloadBackup}>{gettext('tagBackup')}</button></li>
+                                    <li><button className="btn btn-secondary" onClick={handleRestoreBD}>{gettext('tagRestore')}</button></li>
                                 </>
                             }
                             if (permiso.nombre === 'Cliente') return <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>
@@ -157,12 +157,12 @@ export const Navbar = () => {
                         <>
                             <AccountCircleIcon className="user-icon" />
                             <span className="user-name">{user.username}</span>
-                            <button className="logout-button" onClick={handleLogout}>Cerrar Sesión</button>
+                            <button className="logout-button" onClick={handleLogout}>{gettext('tagLogout')}</button>
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="auth-link">Iniciar Sesión</Link>
-                            <Link to="/registrar" className="auth-link">Registrarse</Link>
+                            <Link to="/login" className="auth-link">{gettext('tagLogin')}</Link>
+                                <Link to="/registrar" className="auth-link">{gettext('tagRegistro')}</Link>
                         </>
                     )}
                 </div>
