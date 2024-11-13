@@ -25,7 +25,6 @@ const Login = () => {
                 const data = await response.json();
                 set(data); 
                 navigate("/");
-                window.location.reload();
             } else {
                 const errorData = await response.json();
                 let msg = errorData.message;
@@ -33,6 +32,9 @@ const Login = () => {
             }
         } catch (error) {
             console.log("Error during login:", error);
+        }
+        finally {
+            window.location.reload();
         }
     };
 
