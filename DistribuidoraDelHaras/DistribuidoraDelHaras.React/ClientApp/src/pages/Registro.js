@@ -96,21 +96,6 @@ export const Registro = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <FormControl variant="outlined" className="register-input">
-                    <InputLabel id="rol-label">Rol</InputLabel>
-                    <Select
-                        labelId="rol-label"
-                        id="rol"
-                        value={rol}
-                        onChange={(e) => setRol(e.target.value)}
-                        label="Rol"
-                        required
-                    >
-                        <MenuItem value={1}>Admin</MenuItem>
-                        <MenuItem value={2}>Master</MenuItem>
-                        <MenuItem value={3}>Cliente</MenuItem>
-                    </Select>
-                </FormControl>
                 <Button type="submit" variant="contained" color="primary" className="register-button">
                     Registrarse
                 </Button>

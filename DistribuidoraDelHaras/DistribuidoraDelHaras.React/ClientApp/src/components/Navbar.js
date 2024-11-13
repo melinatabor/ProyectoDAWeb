@@ -98,7 +98,7 @@ export const Navbar = () => {
 
     useEffect(() => {
         const getIdiomas = async () => {
-            setTimeout(async () => { setLanguages(await fetchLanguage()) }, 1000);
+            setTimeout(async () => { setLanguages(await fetchLanguage()) }, 3000);
         };
         getIdiomas();
     }, []);

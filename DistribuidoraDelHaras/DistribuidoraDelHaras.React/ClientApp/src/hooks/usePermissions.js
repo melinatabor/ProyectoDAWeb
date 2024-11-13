@@ -3,9 +3,9 @@
 export const usePermissions = (user) => {
     const [permissions, setPermissions] = useState(null);
 
-    const fetchPermissions = async () => {
+    const fetchPermissions = async (userFetch) => {
         try {
-            const response = await fetch(`api/permiso/permisos-usuario/${user}`, {
+            const response = await fetch(`api/permiso/permisos-usuario/${user || userFetch}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
