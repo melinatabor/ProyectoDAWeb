@@ -58,9 +58,42 @@ export const Permisos = () => {
         return userPermissions || { permisosPadre: "", permisosHijos: "" };
     };
 
+    const convertToXML = (users) => {
+        let xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n<users>';
+
+        users.forEach(user => {
+            const { permisosPadre, permisosHijos } = getUserPermissions(user.id);
+            xmlString += `
+            <user>
+                <id>${user.id}</id>
+                <nombre>${user.nombre}</nombre>
+                <email>${user.email}</email>
+                <rol>${permisosPadre}</rol>
+                <permisosPadre>${permisosPadre}</permisosPadre>
+                <permisosHijos>${permisosHijos}</permisosHijos>
+            </user>`;
+        });
+
+        xmlString += '</users>';
+        return xmlString;
+    };
+
+    const downloadXML = () => {
+        const xmlContent = convertToXML(users?.usuarios || []);
+        const blob = new Blob([xmlContent], { type: 'application/xml' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'usuarios_permisos.xml';
+        link.click();
+    };
+
+
     return (
         <div className="container my-5">
             <h2 className="text-center mb-4">Asignación de Roles</h2>
+            <button className="btn btn-success mb-4" onClick={downloadXML}>
+                Descargar XML
+            </button>
             <table className="table table-bordered">
                 <thead>
                     <tr>
