@@ -92,7 +92,7 @@ namespace MPP
             {
                 List<BEUsuario> lista = new List<BEUsuario>();
 
-                string query = "SELECT Id, Nombre, Apellido, Email, Username, Password, Activo FROM Usuario";
+                string query = "SELECT Id, Nombre, Apellido, Email, Username, Password, Activo, IsLocked FROM Usuario";
 
                 DataTable table = Acceso.ExecuteDataTable(query, null);
 
@@ -125,6 +125,7 @@ namespace MPP
                 usuario.Username = row["Username"].ToString();
                 usuario.Password = row["Password"].ToString();
                 usuario.Activo   = Convert.ToBoolean(row["Activo"]);
+                usuario.IsLocked = Convert.ToBoolean(row["IsLocked"]);
                 return usuario;
             }
             catch (Exception ex) { throw ex; }
@@ -317,6 +318,72 @@ namespace MPP
             {
                 throw ex;
             }
+        }
+
+        public static BEUsuario BuscarUsuarioPorUsuername(BEUsuario usuario)
+        {
+            try
+            {
+                Hashtable parametros = new Hashtable();
+
+                parametros.Add("@Username", usuario.Username);
+
+                string query = $"SELECT * FROM Usuario WHERE Username = @Username";
+
+                DataTable table = Acceso.ExecuteDataTable(query, parametros);
+
+                if (table.Rows.Count > 0)
+                {
+                    foreach (DataRow fila in table.Rows)
+                    {
+                        BEUsuario u = new BEUsuario();
+                        return Llenar(fila, u);
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void RegistrarIntentoFallido(int userId)
+        {
+            string query = "INSERT INTO LoginAttempts (UserId, IsSuccessful) VALUES (@UserId, 0)";
+            Hashtable parametros = new Hashtable { { "@UserId", userId } };
+            Acceso.ExecuteNonQuery(query, parametros);
+        }
+
+        public static bool VerificarIntentosFallidos(int userId)
+        {
+            string query = "SELECT COUNT(*) FROM LoginAttempts WHERE UserId = @UserId AND IsSuccessful = 0";
+
+            Hashtable parametros = new Hashtable { { "@UserId", userId } };
+            int intentosFallidos = (int)Acceso.ExecuteScalar(query, parametros);
+
+            if (intentosFallidos >= 3)
+            {
+                BloquearUsuario(userId);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void BloquearUsuario(int userId)
+        {
+            string query = "UPDATE Usuario SET IsLocked = 1 WHERE Id = @UserId";
+            Hashtable parametros = new Hashtable { { "@UserId", userId } };
+            Acceso.ExecuteNonQuery(query, parametros);
+        }
+
+        public static void DesbloquearUsuario(int userId)
+        {
+            string query = "UPDATE Usuario SET IsLocked = 0 WHERE Id = @UserId";
+            Hashtable parametros = new Hashtable { { "@UserId", userId } };
+            Acceso.ExecuteNonQuery(query, parametros);
         }
     }
 }

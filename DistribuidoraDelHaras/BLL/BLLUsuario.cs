@@ -42,8 +42,24 @@ namespace BLL
         {
             try
             {
-                BEUsuario usuarioExistente = BuscarUsuario(usuario)
-                    ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
+                BEUsuario usuarioUsername = BuscarUsuarioPorUsuername(usuario);
+
+                BEUsuario usuarioExistente = BuscarUsuario(usuario);
+
+                if (usuarioUsername != null && usuarioUsername.Password != usuarioExistente?.Password)
+                {
+                    MPPUsuario.RegistrarIntentoFallido(usuarioUsername.Id);
+                    if (VerificarIntentosFallidos(usuarioUsername.Id))
+                        throw new Exception("Cuenta bloqueada por múltiples intentos fallidos.");
+                }
+
+                if (usuarioExistente == null)
+                {
+                    throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
+                }
+
+                if (usuarioExistente.IsLocked)
+                    throw new Exception("Cuenta bloqueada. Contacte al administrador.");
 
 
                 if (IsCorrupted())
@@ -308,6 +324,24 @@ namespace BLL
             {
                 throw ex;
             }
+        }
+
+        private static BEUsuario BuscarUsuarioPorUsuername(BEUsuario usuario)
+        {
+            try
+            {
+                return MPPUsuario.BuscarUsuarioPorUsuername(usuario);
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        private static bool VerificarIntentosFallidos(int id)
+        {
+            try
+            {
+                return MPPUsuario.VerificarIntentosFallidos(id);
+            }
+            catch (Exception ex) { throw ex; }
         }
     }
 }

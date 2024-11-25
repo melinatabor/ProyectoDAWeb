@@ -36,7 +36,7 @@ const Login = () => {
                 const first = array.shift();
                 setUserType(first);
                 setModificaciones(array);
-                setErrorMessage(errorData.message === "2" ? "Ocurrió un error inesperado. Por el momento no tiene acceso al sistema." : "La base de datos se encuentra en un estado inconsistente.");
+                setErrorMessage(errorData.message === "2" ? "Ocurrió un error inesperado. Por el momento no tiene acceso al sistema." : errorData.message);
                 setShowModal(true);
                 setLoginSuccessful(false);
             }
