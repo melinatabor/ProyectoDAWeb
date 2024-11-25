@@ -45,11 +45,19 @@ namespace BLL
                 BEUsuario usuarioExistente = BuscarUsuario(usuario)
                     ?? throw new Exception("Credenciales incorrectas. Por favor vuelva a ingresar los datos correctamente.");
 
-                if (!UsuarioEsMaster(usuarioExistente))
+
+                if (IsCorrupted())
                 {
-                    string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
-                    if (!string.IsNullOrEmpty(mensajeModificaciones))
-                        throw new Exception($"{mensajeModificaciones}");
+                    if (UsuarioEsMaster(usuarioExistente))
+                    {
+                        string mensajeModificaciones = VerificarModificacionesYEliminacionesExternas();
+                        if (!string.IsNullOrEmpty(mensajeModificaciones))
+                            throw new Exception($"{mensajeModificaciones}");
+                    }
+                    else
+                    {
+                        throw new Exception($"2");
+                    }
                 }
 
                 ObtenerPermisosUsuario(usuarioExistente);
@@ -110,10 +118,26 @@ namespace BLL
             catch (Exception ex) { throw ex; }
         }
 
+        public static bool IsCorrupted()
+        {
+            string dvvBitacoraActual = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
+            string dvvProductoActual = DigitoVerificador.RunVertical(BLLProducto.Listar());
+
+            string dvvBitacoraGuardado = BLLDigitoVerificador.ObtenerDigitoVerificadorVertical(BEDigitoVerificador.ENTIDAD_BITACORA);
+            string dvvProductoGuardado = BLLDigitoVerificador.ObtenerDigitoVerificadorVertical(BEDigitoVerificador.ENTIDAD_PRODUCTO);
+
+            bool bitacoraModificada = dvvBitacoraActual != dvvBitacoraGuardado;
+            bool productoModificado = dvvProductoActual != dvvProductoGuardado;
+
+            return bitacoraModificada || productoModificado;
+        }
+
         public static string VerificarModificacionesYEliminacionesExternas()
         {
-            var mensajesDeCambio = new List<string>();
-
+            var mensajesDeCambio = new List<string>
+            {
+                "1"
+            };
             string dvvBitacoraActual = DigitoVerificador.RunVertical(BLLBitacora.ListarTodo());
             string dvvProductoActual = DigitoVerificador.RunVertical(BLLProducto.Listar());
 
@@ -165,7 +189,7 @@ namespace BLL
                 }
             }
 
-            return mensajesDeCambio.Count > 0 ? $"Se detectaron modificaciones en la base de datos. {string.Join(" ", mensajesDeCambio)}.\nPor favor contacte al administrador." : string.Empty;
+            return string.Join(",", mensajesDeCambio);
         }
 
         private static bool CompararDatosCSV(string datosAntesCSV, string datosDespuesCSV, object registroActual, string operacion)
@@ -272,6 +296,18 @@ namespace BLL
                 return MPPUsuario.EliminarPermisos(usuario);
             }
             catch (Exception ex) { throw ex; }
+        }
+
+        public static bool RealizarBackup()
+        {
+            try
+            {
+                return MPPUsuario.RealizarBackup();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

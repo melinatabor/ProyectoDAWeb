@@ -69,27 +69,6 @@ export const Navbar = () => {
         }
     };
 
-    const handleRestoreBD = async () => {
-        try {
-            const response = await fetch("/api/recalculardv", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-
-                alert(data.message);
-            } else {
-                const errorData = await response.json();
-                alert(errorData.message);
-            }
-        } catch (error) {
-            console.log("Error al restaurar la base de datos:", error);
-        }
-    }
 
     const handleClick = (id) => {
         clearLanguage();
@@ -133,7 +112,6 @@ export const Navbar = () => {
                             if (permiso.nombre === 'Master') {
                                 return <>
                                     <li><button className="btn btn-primary" onClick={handleDownloadBackup}>{gettext('tagBackup')}</button></li>
-                                    <li><button className="btn btn-secondary" onClick={handleRestoreBD}>{gettext('tagRestore')}</button></li>
                                 </>
                             }
                             if (permiso.nombre === 'Cliente') return <li><Link to="/carrito"><ShoppingCartIcon fontSize="large" /></Link></li>

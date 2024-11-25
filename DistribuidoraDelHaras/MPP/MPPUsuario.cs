@@ -306,5 +306,17 @@ namespace MPP
                 throw ex;
             }
         }
+
+        public static bool RealizarBackup()
+        {
+            try
+            {
+                return Acceso.Backup();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

@@ -2,14 +2,47 @@
 using System.Collections;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Configuration;
+using System.IO;
 
 namespace DAL
 {
     public class Acceso
     {
-        private static SqlConnection _connection = new SqlConnection("Data Source=MELINATABORF7E5\\SQLEXPRESS;Initial Catalog=DistHaras;Integrated Security=True;TrustServerCertificate=True;Pooling=True;Max Pool Size=100;Min Pool Size=5;MultipleActiveResultSets=True;");
+        private static SqlConnection _connection = new SqlConnection("Data Source=DESKTOP-BEA1EQV\\SQLEXPRESS;Initial Catalog=DistHaras;Integrated Security=True;TrustServerCertificate=True;Pooling=True;Max Pool Size=100;Min Pool Size=5;MultipleActiveResultSets=True;");
         private static SqlCommand _command;
         private static SqlTransaction _transaction;
+
+
+        public static bool Backup()
+        {
+            try
+            {
+                string rutaDescargas = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                string rutaBackup = Path.Combine(rutaDescargas, $"DistHaras_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.bak");
+
+                using (SqlConnection connection = new SqlConnection("Data Source=DESKTOP-BEA1EQV\\SQLEXPRESS;Initial Catalog=DistHaras;Integrated Security=True;TrustServerCertificate=True;Pooling=True;Max Pool Size=100;Min Pool Size=5;MultipleActiveResultSets=True;"))
+                {
+                    connection.Open();
+
+                    using (SqlCommand backupCmd = new SqlCommand("BACKUP DATABASE [DistHaras] TO DISK = @RutaBackup WITH FORMAT, INIT, NAME = 'Backup de Distribuidora del Haras';", connection))
+                    {
+                        backupCmd.Parameters.AddWithValue("@RutaBackup", rutaBackup);
+                        backupCmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al realizar backup de la base de datos: {ex.Message}", ex);
+            }
+            finally
+            {
+                if (_connection.State != ConnectionState.Closed) _connection.Close();
+            }
+        }
 
         public static DataTable ExecuteDataTable(string query, Hashtable parametros, bool isStoredProcedure = false)
         {
